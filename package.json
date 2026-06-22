@@ -1,0 +1,1 @@
+{"name":"oneclick-superman","version":"1.0.0","private":true,"description":"OneClick Superman Taiwan stock watchlist with Vercel backend API","scripts":{"dev":"vercel dev","start":"vercel dev"},"engines":{"node":">=20"},"dependencies":{},"devDependencies":{}}
