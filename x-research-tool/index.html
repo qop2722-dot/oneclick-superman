@@ -13,13 +13,15 @@ h1{font-size:26px;line-height:1.2;margin:8px 0}.sub{color:var(--muted);font-size
 .panel{padding:14px;margin:14px 0}.card{padding:14px;margin:10px 0}label{display:block;font-size:13px;color:#d7dce3;margin:12px 0 7px}
 input,textarea,select,button{width:100%;font:inherit;border-radius:14px;border:1px solid var(--line)}input,textarea,select{background:#0e1013;color:var(--text);padding:13px}
 textarea{min-height:92px;resize:vertical}button{padding:14px 16px;background:#f4f6f8;color:#08090b;font-weight:800;margin-top:12px;cursor:pointer}
-button.secondary{background:var(--card2);color:var(--text)}button:disabled{opacity:.5;cursor:not-allowed}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.help{font-size:11px;color:var(--muted);line-height:1.55;margin-top:7px}.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.chip{width:auto;padding:8px 10px;margin:0;background:var(--card2);color:#dce2e9;font-size:12px;font-weight:600}
-.status{white-space:pre-wrap;font-size:13px;line-height:1.55;color:var(--muted);margin-top:10px}.ok{color:var(--ok)}.err{color:var(--bad)}
+button.secondary{background:var(--card2);color:var(--text)}button:disabled{opacity:.45;cursor:not-allowed}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.help{font-size:11px;color:var(--muted);line-height:1.55;margin-top:7px}.status{white-space:pre-wrap;font-size:13px;line-height:1.55;color:var(--muted);margin-top:10px}.ok{color:var(--ok)}.err{color:var(--bad)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}.tab{margin:0;background:var(--card2);color:#cfd5dd}.tab.active{background:#f4f6f8;color:#08090b}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.stat{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
 .stat b{display:block;font-size:20px}.stat span{font-size:11px;color:var(--muted)}.meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.tag{font-size:11px;padding:4px 7px;border-radius:999px;background:var(--card2);border:1px solid var(--line);color:#d8dee6}
 .metrics{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px}.link{display:inline-block;color:#fff;margin:8px 0 10px}.section-title{font-weight:800;font-size:15px;margin:18px 2px 8px}
 .note{font-size:12px;color:var(--muted);line-height:1.6}.footer{margin-top:18px;padding:0 2px;color:#737c87;font-size:11px;line-height:1.55}
+.badge{display:inline-block;margin-top:8px;padding:5px 8px;border-radius:999px;background:#232833;border:1px solid var(--line);font-size:11px;color:#c8d1dc}
+.hidden{display:none}
 </style>
 </head>
 <body>
@@ -27,22 +29,48 @@ button.secondary{background:var(--card2);color:var(--text)}button:disabled{opaci
   <div class="hero">
     <div class="eyebrow">X 公開資料研究</div>
     <h1>X 敏感內容研究工具</h1>
-    <div class="sub">以 X 官方 API 搜尋公開貼文，整理敏感標記、媒體類型、發文時間、標籤與互動數據。此工具不批次下載圖片或影片，也不繞過登入、年齡限制或其他存取控制。</div>
+    <div class="sub">用來整理公開貼文的研究資料，包括敏感內容標記、媒體類型、發文時間、標籤與互動數據。此工具不批次下載圖片或影片，也不繞過登入、年齡限制或其他存取控制。</div>
   </div>
 
-  <div class="panel">
-    <label>你的 X Developer Bearer Token</label>
-    <input id="token" type="password" autocomplete="off" placeholder="貼上 Bearer Token">
-    <div class="help">Token 只用於這次查詢，不會儲存在本站資料庫。關閉或重新整理頁面後需重新輸入。</div>
+  <div class="tabs">
+    <button id="tabQuick" class="tab active">快速搜尋</button>
+    <button id="tabData" class="tab">資料整理</button>
+  </div>
+
+  <div id="quickPanel" class="panel">
+    <label>研究關鍵字</label>
+    <textarea id="quickQuery" placeholder="例如：關鍵字、主題名稱、標籤"></textarea>
+
+    <div class="row">
+      <div>
+        <label>媒體類型</label>
+        <select id="quickMedia">
+          <option value="media" selected>圖片或影片</option>
+          <option value="images">只看圖片</option>
+          <option value="videos">只看影片</option>
+          <option value="all">不限媒體</option>
+        </select>
+      </div>
+      <div>
+        <label>排序方式</label>
+        <select id="quickOrder">
+          <option value="live" selected>最新</option>
+          <option value="top">熱門</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="openX">在 X 開啟搜尋結果</button>
+    <div class="help">這個模式不需要開發者存取權杖，會直接開啟 X 的搜尋頁。是否顯示敏感內容，仍依你的 X 帳號搜尋設定與年齡資格決定。</div>
+  </div>
+
+  <div id="dataPanel" class="panel hidden">
+    <label>X 開發者存取權杖</label>
+    <input id="token" type="password" autocomplete="off" placeholder="貼上你的存取權杖">
+    <div class="help">存取權杖只用於這次查詢，不應公開分享。</div>
 
     <label>研究關鍵字／搜尋條件</label>
     <textarea id="query" placeholder="例如：關鍵字 has:media -is:retweet"></textarea>
-    <div class="chips">
-      <button class="chip" type="button" data-add="has:media">只看有媒體</button>
-      <button class="chip" type="button" data-add="-is:retweet">排除轉貼</button>
-      <button class="chip" type="button" data-add="lang:ja">日文</button>
-      <button class="chip" type="button" data-add="lang:en">英文</button>
-    </div>
 
     <div class="row">
       <div>
@@ -61,10 +89,11 @@ button.secondary{background:var(--card2);color:var(--text)}button:disabled{opaci
       </div>
     </div>
 
-    <button id="search">開始搜尋</button>
+    <button id="search">開始整理資料</button>
     <button id="more" class="secondary" disabled>載入下一頁</button>
-    <button id="csv" class="secondary" disabled>匯出 CSV</button>
-    <div id="status" class="status">尚未搜尋。</div>
+    <button id="csv" class="secondary" disabled>匯出試算表資料</button>
+    <div id="status" class="status">尚未查詢。</div>
+    <div id="hostingNote" class="badge">目前外部版本先提供快速搜尋；自動資料整理需要伺服器端連線功能。</div>
   </div>
 
   <div id="summary" style="display:none">
@@ -76,19 +105,37 @@ button.secondary{background:var(--card2);color:var(--text)}button:disabled{opaci
   </div>
 
   <div class="section-title">研究結果</div>
-  <div id="results"><div class="note">完成搜尋後，結果會顯示在這裡。</div></div>
+  <div id="results"><div class="note">使用快速搜尋會直接開啟 X；使用資料整理後，整理結果會顯示在這裡。</div></div>
 
-  <div class="footer">研究工具只整理公開貼文研究欄位與原始貼文連結。請依 X Developer Agreement、所在地法律及研究倫理使用資料。</div>
+  <div class="footer">請依 X 開發者條款、所在地法律及研究倫理使用公開資料。</div>
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
 let rows=[],nextToken="";
 
-document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{
-  const q=$("query"); const add=b.dataset.add;
-  if(!q.value.includes(add)) q.value=(q.value.trim()+" "+add).trim();
-});
+function showTab(which){
+  const q=which==="quick";
+  $("quickPanel").classList.toggle("hidden",!q);
+  $("dataPanel").classList.toggle("hidden",q);
+  $("tabQuick").classList.toggle("active",q);
+  $("tabData").classList.toggle("active",!q);
+}
+$("tabQuick").onclick=()=>showTab("quick");
+$("tabData").onclick=()=>showTab("data");
+
+$("openX").onclick=()=>{
+  const text=$("quickQuery").value.trim();
+  if(!text){alert("請先輸入研究關鍵字。");return}
+  const media=$("quickMedia").value;
+  const order=$("quickOrder").value;
+  let q=text;
+  if(media==="media") q+=" filter:media";
+  if(media==="images") q+=" filter:images";
+  if(media==="videos") q+=" filter:videos";
+  const url="https://x.com/search?q="+encodeURIComponent(q)+"&src=typed_query&f="+encodeURIComponent(order);
+  window.open(url,"_blank","noopener");
+};
 
 function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 function csvCell(v){return '"'+String(v??"").replace(/"/g,'""')+'"'}
@@ -97,45 +144,49 @@ function render(){
   $("videos").textContent=rows.filter(r=>(r.media_types||"").includes("video")).length;
   $("photos").textContent=rows.filter(r=>(r.media_types||"").includes("photo")).length;
   $("summary").style.display=rows.length?"block":"none"; $("csv").disabled=!rows.length;
-  if(!rows.length){$("results").innerHTML='<div class="note">沒有符合目前條件的資料。</div>';return}
+  if(!rows.length){$("results").innerHTML='<div class="note">目前沒有整理結果。</div>';return}
   $("results").innerHTML=rows.map(r=>`<div class="card">
     <div class="meta">
-      ${r.possibly_sensitive?'<span class="tag">敏感標記</span>':''}
+      ${r.possibly_sensitive?'<span class="tag">敏感內容標記</span>':''}
       <span class="tag">${esc(r.media_types||"無媒體類型")}</span>
       <span class="tag">${esc(r.lang||"語言未知")}</span>
     </div>
     <a class="link" href="${esc(r.post_url)}" target="_blank" rel="noopener">開啟 X 原始貼文</a>
     <div class="metrics"><span>喜歡 ${r.like_count}</span><span>回覆 ${r.reply_count}</span><span>轉貼 ${r.retweet_count}</span><span>引用 ${r.quote_count}</span></div>
-    <div class="help">${esc(r.created_at||"")}<br>匿名作者：${esc(r.author_hash||"")} · 媒體數：${r.media_count||0}${r.video_duration_ms?' · 影片長度 '+r.video_duration_ms+'ms':''}</div>
+    <div class="help">${esc(r.created_at||"")}<br>匿名作者：${esc(r.author_hash||"")} · 媒體數：${r.media_count||0}</div>
   </div>`).join("");
 }
+
 async function fetchPage(reset){
   const token=$("token").value.trim(),query=$("query").value.trim(),limit=Number($("limit").value);
-  const sensitive=$("sensitive").value, status=$("status"), btn=$("search");
-  if(!token){status.textContent="請先輸入 Bearer Token。";status.className="status err";return}
+  const sensitive=$("sensitive").value,status=$("status");
+  if(!token){status.textContent="請先輸入 X 開發者存取權杖。";status.className="status err";return}
   if(!query){status.textContent="請先輸入研究關鍵字或搜尋條件。";status.className="status err";return}
+  if(location.hostname.endsWith("github.io")){
+    status.textContent="目前這個外部版本是靜態網頁，瀏覽器會阻擋直接連線到 X 的資料介面。快速搜尋可正常使用；自動資料整理需要另外啟用伺服器端連線功能。";
+    status.className="status err";return
+  }
   if(reset){rows=[];nextToken="";render()}
-  btn.disabled=true;$("more").disabled=true;status.textContent="正在向 X API 查詢…";status.className="status";
+  $("search").disabled=true;$("more").disabled=true;status.textContent="正在向 X 查詢…";status.className="status";
   try{
     const r=await fetch("/api/search",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token,query,max_results:limit,next_token:nextToken||null})});
     const data=await r.json();
-    if(!r.ok) throw new Error(data.error||("HTTP "+r.status));
+    if(!r.ok) throw new Error(data.error||("查詢失敗，代碼 "+r.status));
     const incoming=(data.rows||[]).filter(x=>sensitive==="all"||x.possibly_sensitive===true);
-    rows=rows.concat(incoming); nextToken=data.next_token||""; render();
+    rows=rows.concat(incoming);nextToken=data.next_token||"";render();
     $("more").disabled=!nextToken;
     status.textContent=`完成。本次新增 ${incoming.length} 筆，目前共 ${rows.length} 筆。${nextToken?" 可繼續載入下一頁。":""}`;
     status.className="status ok";
   }catch(e){
-    status.textContent="查詢失敗："+(e.message||e);
-    status.className="status err";
-  }finally{btn.disabled=false}
+    status.textContent="查詢失敗："+(e.message||e);status.className="status err";
+  }finally{$("search").disabled=false}
 }
 $("search").onclick=()=>fetchPage(true);
 $("more").onclick=()=>fetchPage(false);
 $("csv").onclick=()=>{
-  const cols=["post_id","post_url","author_hash","created_at","lang","possibly_sensitive","media_count","media_types","video_duration_ms","max_width","max_height","hashtags","like_count","reply_count","retweet_count","quote_count"];
-  const out="\ufeff"+[cols.join(","),...rows.map(r=>cols.map(c=>csvCell(r[c])).join(","))].join("\n");
-  const u=URL.createObjectURL(new Blob([out],{type:"text/csv;charset=utf-8"}));const a=document.createElement("a");a.href=u;a.download="X_敏感內容研究.csv";a.click();setTimeout(()=>URL.revokeObjectURL(u),3000);
+  const cols=[["貼文編號","post_id"],["貼文網址","post_url"],["匿名作者","author_hash"],["發文時間","created_at"],["語言","lang"],["敏感內容標記","possibly_sensitive"],["媒體數量","media_count"],["媒體類型","media_types"],["影片長度","video_duration_ms"],["最大寬度","max_width"],["最大高度","max_height"],["標籤","hashtags"],["喜歡數","like_count"],["回覆數","reply_count"],["轉貼數","retweet_count"],["引用數","quote_count"]];
+  const out="\ufeff"+[cols.map(c=>c[0]).join(","),...rows.map(r=>cols.map(c=>csvCell(r[c[1]])).join(","))].join("\n");
+  const u=URL.createObjectURL(new Blob([out],{type:"text/csv;charset=utf-8"}));const a=document.createElement("a");a.href=u;a.download="X_敏感內容研究資料.csv";a.click();setTimeout(()=>URL.revokeObjectURL(u),3000);
 };
 </script>
 </body>
