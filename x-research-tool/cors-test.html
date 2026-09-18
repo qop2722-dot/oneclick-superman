@@ -1,0 +1,7 @@
+<!doctype html><meta charset="utf-8"><title>測試</title><pre id=o>測試中</pre><script>
+(async()=>{try{
+ const u='https://api.x.com/2/tweets/search/recent?query=OpenAI&max_results=10';
+ const r=await fetch(u,{headers:{Authorization:'Bearer test',Accept:'application/json'}});
+ document.getElementById('o').textContent='HTTP '+r.status+'\n'+await r.text();
+}catch(e){document.getElementById('o').textContent='FETCH_ERROR\n'+e.message}})();
+</script>
