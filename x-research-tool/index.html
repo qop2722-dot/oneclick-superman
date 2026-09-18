@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090a0c">
+<title>X 敏感內容研究工具</title>
+<style>
+:root{--bg:#090a0c;--card:#14161a;--card2:#1b1e24;--line:#2a2e36;--text:#f6f7f9;--muted:#9da6b2;--ok:#67d58b;--bad:#ff7373;--blue:#66a8ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+.wrap{max-width:760px;margin:auto;padding:18px 14px 100px}.hero{padding:10px 2px 4px}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;letter-spacing:.08em}
+h1{font-size:26px;line-height:1.2;margin:8px 0}.sub{color:var(--muted);font-size:13px;line-height:1.65}.panel,.card{background:var(--card);border:1px solid var(--line);border-radius:18px}
+.panel{padding:14px;margin:14px 0}.card{padding:14px;margin:10px 0}label{display:block;font-size:13px;color:#d7dce3;margin:12px 0 7px}
+input,textarea,select,button{width:100%;font:inherit;border-radius:14px;border:1px solid var(--line)}input,textarea,select{background:#0e1013;color:var(--text);padding:13px}
+textarea{min-height:92px;resize:vertical}button{padding:14px 16px;background:#f4f6f8;color:#08090b;font-weight:800;margin-top:12px;cursor:pointer}
+button.secondary{background:var(--card2);color:var(--text)}button:disabled{opacity:.5;cursor:not-allowed}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.help{font-size:11px;color:var(--muted);line-height:1.55;margin-top:7px}.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.chip{width:auto;padding:8px 10px;margin:0;background:var(--card2);color:#dce2e9;font-size:12px;font-weight:600}
+.status{white-space:pre-wrap;font-size:13px;line-height:1.55;color:var(--muted);margin-top:10px}.ok{color:var(--ok)}.err{color:var(--bad)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.stat{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-size:20px}.stat span{font-size:11px;color:var(--muted)}.meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.tag{font-size:11px;padding:4px 7px;border-radius:999px;background:var(--card2);border:1px solid var(--line);color:#d8dee6}
+.metrics{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px}.link{display:inline-block;color:#fff;margin:8px 0 10px}.section-title{font-weight:800;font-size:15px;margin:18px 2px 8px}
+.note{font-size:12px;color:var(--muted);line-height:1.6}.footer{margin-top:18px;padding:0 2px;color:#737c87;font-size:11px;line-height:1.55}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">X 公開資料研究</div>
+    <h1>X 敏感內容研究工具</h1>
+    <div class="sub">以 X 官方 API 搜尋公開貼文，整理敏感標記、媒體類型、發文時間、標籤與互動數據。此工具不批次下載圖片或影片，也不繞過登入、年齡限制或其他存取控制。</div>
+  </div>
+
+  <div class="panel">
+    <label>你的 X Developer Bearer Token</label>
+    <input id="token" type="password" autocomplete="off" placeholder="貼上 Bearer Token">
+    <div class="help">Token 只用於這次查詢，不會儲存在本站資料庫。關閉或重新整理頁面後需重新輸入。</div>
+
+    <label>研究關鍵字／搜尋條件</label>
+    <textarea id="query" placeholder="例如：關鍵字 has:media -is:retweet"></textarea>
+    <div class="chips">
+      <button class="chip" type="button" data-add="has:media">只看有媒體</button>
+      <button class="chip" type="button" data-add="-is:retweet">排除轉貼</button>
+      <button class="chip" type="button" data-add="lang:ja">日文</button>
+      <button class="chip" type="button" data-add="lang:en">英文</button>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>每次抓取筆數</label>
+        <select id="limit">
+          <option value="10">10</option><option value="25">25</option>
+          <option value="50" selected>50</option><option value="100">100</option>
+        </select>
+      </div>
+      <div>
+        <label>敏感內容篩選</label>
+        <select id="sensitive">
+          <option value="only" selected>只顯示敏感標記</option>
+          <option value="all">顯示全部</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="search">開始搜尋</button>
+    <button id="more" class="secondary" disabled>載入下一頁</button>
+    <button id="csv" class="secondary" disabled>匯出 CSV</button>
+    <div id="status" class="status">尚未搜尋。</div>
+  </div>
+
+  <div id="summary" style="display:none">
+    <div class="stats">
+      <div class="stat"><b id="count">0</b><span>研究樣本</span></div>
+      <div class="stat"><b id="videos">0</b><span>含影片</span></div>
+      <div class="stat"><b id="photos">0</b><span>含圖片</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">研究結果</div>
+  <div id="results"><div class="note">完成搜尋後，結果會顯示在這裡。</div></div>
+
+  <div class="footer">研究工具只整理公開貼文研究欄位與原始貼文連結。請依 X Developer Agreement、所在地法律及研究倫理使用資料。</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let rows=[],nextToken="";
+
+document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{
+  const q=$("query"); const add=b.dataset.add;
+  if(!q.value.includes(add)) q.value=(q.value.trim()+" "+add).trim();
+});
+
+function esc(s=""){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function csvCell(v){return '"'+String(v??"").replace(/"/g,'""')+'"'}
+function render(){
+  $("count").textContent=rows.length;
+  $("videos").textContent=rows.filter(r=>(r.media_types||"").includes("video")).length;
+  $("photos").textContent=rows.filter(r=>(r.media_types||"").includes("photo")).length;
+  $("summary").style.display=rows.length?"block":"none"; $("csv").disabled=!rows.length;
+  if(!rows.length){$("results").innerHTML='<div class="note">沒有符合目前條件的資料。</div>';return}
+  $("results").innerHTML=rows.map(r=>`<div class="card">
+    <div class="meta">
+      ${r.possibly_sensitive?'<span class="tag">敏感標記</span>':''}
+      <span class="tag">${esc(r.media_types||"無媒體類型")}</span>
+      <span class="tag">${esc(r.lang||"語言未知")}</span>
+    </div>
+    <a class="link" href="${esc(r.post_url)}" target="_blank" rel="noopener">開啟 X 原始貼文</a>
+    <div class="metrics"><span>喜歡 ${r.like_count}</span><span>回覆 ${r.reply_count}</span><span>轉貼 ${r.retweet_count}</span><span>引用 ${r.quote_count}</span></div>
+    <div class="help">${esc(r.created_at||"")}<br>匿名作者：${esc(r.author_hash||"")} · 媒體數：${r.media_count||0}${r.video_duration_ms?' · 影片長度 '+r.video_duration_ms+'ms':''}</div>
+  </div>`).join("");
+}
+async function fetchPage(reset){
+  const token=$("token").value.trim(),query=$("query").value.trim(),limit=Number($("limit").value);
+  const sensitive=$("sensitive").value, status=$("status"), btn=$("search");
+  if(!token){status.textContent="請先輸入 Bearer Token。";status.className="status err";return}
+  if(!query){status.textContent="請先輸入研究關鍵字或搜尋條件。";status.className="status err";return}
+  if(reset){rows=[];nextToken="";render()}
+  btn.disabled=true;$("more").disabled=true;status.textContent="正在向 X API 查詢…";status.className="status";
+  try{
+    const r=await fetch("/api/search",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({token,query,max_results:limit,next_token:nextToken||null})});
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.error||("HTTP "+r.status));
+    const incoming=(data.rows||[]).filter(x=>sensitive==="all"||x.possibly_sensitive===true);
+    rows=rows.concat(incoming); nextToken=data.next_token||""; render();
+    $("more").disabled=!nextToken;
+    status.textContent=`完成。本次新增 ${incoming.length} 筆，目前共 ${rows.length} 筆。${nextToken?" 可繼續載入下一頁。":""}`;
+    status.className="status ok";
+  }catch(e){
+    status.textContent="查詢失敗："+(e.message||e);
+    status.className="status err";
+  }finally{btn.disabled=false}
+}
+$("search").onclick=()=>fetchPage(true);
+$("more").onclick=()=>fetchPage(false);
+$("csv").onclick=()=>{
+  const cols=["post_id","post_url","author_hash","created_at","lang","possibly_sensitive","media_count","media_types","video_duration_ms","max_width","max_height","hashtags","like_count","reply_count","retweet_count","quote_count"];
+  const out="\ufeff"+[cols.join(","),...rows.map(r=>cols.map(c=>csvCell(r[c])).join(","))].join("\n");
+  const u=URL.createObjectURL(new Blob([out],{type:"text/csv;charset=utf-8"}));const a=document.createElement("a");a.href=u;a.download="X_敏感內容研究.csv";a.click();setTimeout(()=>URL.revokeObjectURL(u),3000);
+};
+</script>
+</body>
+</html>
