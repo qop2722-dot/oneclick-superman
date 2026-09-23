@@ -2,10 +2,10 @@
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Multi-AI 協作室</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:1020px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}.providers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.provider{border:1px solid #33415f;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}.provider input{width:auto}.provider.on{background:#182647;border-color:#667eea}.provider.ok{box-shadow:inset 0 0 0 1px #2c9b78}.provider .name{font-weight:700}.provider .state{margin-left:auto;font-size:12px;color:#95a3bf}.roundhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.roundtitle{font-weight:800;color:#cbd5e1}.msg{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:105px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.hide{display:none}.hint{font-size:13px;color:#aab4c8;margin-top:8px}.count{font-weight:700}.progress{padding:10px 12px;border-radius:10px;background:#101a31;color:#b8c4dc;margin-top:10px}.sep{height:1px;background:#26324b;margin:10px 0}
+*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:1020px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}.providers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.provider{border:1px solid #33415f;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}.provider input{width:auto}.provider.on{background:#182647;border-color:#667eea}.provider.ok{box-shadow:inset 0 0 0 1px #2c9b78}.provider .name{font-weight:700}.provider .state{margin-left:auto;font-size:12px;color:#95a3bf}.roundhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.roundtitle{font-weight:800;color:#cbd5e1}.msg{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:105px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.testmsg{grid-column:2/-1;font-size:13px;padding:7px 9px;border-radius:8px;margin-top:2px}.testmsg.good{background:#102c25;color:#9cf0d0}.testmsg.bad{background:#3a1820;color:#ffdce1}.testsummary{padding:10px 12px;border-radius:10px;background:#101a31;margin:8px 0}.testsummary.bad{background:#3a1820;color:#ffdce1}.hide{display:none}.hint{font-size:13px;color:#aab4c8;margin-top:8px}.count{font-weight:700}.progress{padding:10px 12px;border-radius:10px;background:#101a31;color:#b8c4dc;margin-top:10px}.sep{height:1px;background:#26324b;margin:10px 0}
 @media(max-width:760px){.controls,.providers,.line,.msg{grid-template-columns:1fr}.provider{min-height:46px}}
 </style></head><body><main>
-<header><div><h1>Multi-AI 協作室</h1><small>Gemini · Mistral · Groq · GPT</small></div><button id="toggle">⚙ API 設定</button></header>
+<header><div><h1>Multi-AI 協作室</h1><small>Gemini · Mistral · Groq · GPT · v3</small></div><button id="toggle">⚙ API 設定</button></header>
 
 <section class="card">
   <div class="controls">
@@ -21,7 +21,8 @@
 </section>
 
 <section class="card hide" id="settings"><div class="settings">
-  <div class="muted">只需要填你要使用的 AI。現在「測試」只驗證 API Key 是否有效，不會因指定模型不可用而誤判。失敗時會在下方直接顯示原始錯誤原因。API Key 由轉送後端呼叫對應模型，不寫入資料庫；勾選「記住」後才會存於你這台瀏覽器。</div>
+  <div class="muted">只需要填你要使用的 AI。現在「測試」只驗證 API Key 是否有效，不會因指定模型不可用而誤判。每個 AI 的結果會直接顯示在自己的欄位下面。</div>
+  <div id="testSummary" class="testsummary hide"></div>
   <div id="rows"></div>
   <label><input id="remember" type="checkbox" style="width:auto"> 記住 API Key 在這台瀏覽器</label>
   <div class="actions"><button id="testSelected">測試已勾選 AI</button><button id="save" class="pri">完成</button></div>
@@ -42,10 +43,10 @@
 <script>
 const API='https://uimcaonikxuthcapgjqo.supabase.co/functions/v1/multi-ai-collab';
 const P=[
- {id:'gemini',name:'Gemini',model:'gemini-3.8-flash',key:'',ok:false,on:true},
- {id:'mistral',name:'Mistral',model:'mistral-medium-latest',key:'',ok:false,on:true},
- {id:'groq',name:'Groq',model:'openai/gpt-oss-120b',key:'',ok:false,on:true},
- {id:'openai',name:'GPT',model:'gpt-5.6',key:'',ok:false,on:false}
+ {id:'gemini',name:'Gemini',model:'gemini-3.8-flash',key:'',ok:false,on:true,testMsg:''},
+ {id:'mistral',name:'Mistral',model:'mistral-medium-latest',key:'',ok:false,on:true,testMsg:''},
+ {id:'groq',name:'Groq',model:'openai/gpt-oss-120b',key:'',ok:false,on:true,testMsg:''},
+ {id:'openai',name:'GPT',model:'gpt-5.6',key:'',ok:false,on:false,testMsg:''}
 ];
 const $=id=>document.getElementById(id), state={history:[],running:false};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -67,7 +68,7 @@ function renderParticipants(){
  });
 }
 function renderSettings(){
- $('rows').innerHTML=P.map(p=>'<div class="line"><strong>'+p.name+'</strong><label><span>API Key</span><input type="password" data-key="'+p.id+'" value="'+esc(p.key)+'" placeholder="'+(p.id==='openai'?'sk-…':p.id==='groq'?'gsk_…':p.id==='gemini'?'AIza…':'Mistral key')+'"></label><label><span>Model</span><input data-model="'+p.id+'" value="'+esc(p.model)+'"></label><button data-test="'+p.id+'">測試</button></div>').join('');
+ $('rows').innerHTML=P.map(p=>'<div class="line"><strong>'+p.name+'</strong><label><span>API Key</span><input type="password" data-key="'+p.id+'" value="'+esc(p.key)+'" placeholder="'+(p.id==='openai'?'sk-…':p.id==='groq'?'gsk_…':p.id==='gemini'?'AIza…':'Mistral key')+'"></label><label><span>Model</span><input data-model="'+p.id+'" value="'+esc(p.model)+'"></label><button data-test="'+p.id+'">測試</button>'+(p.testMsg?'<div class="testmsg '+(p.ok?'good':'bad')+'">'+esc(p.testMsg)+'</div>':'')+'</div>').join('');
  document.querySelectorAll('[data-key]').forEach(e=>e.oninput=()=>find(e.dataset.key).key=e.value.trim());
  document.querySelectorAll('[data-model]').forEach(e=>e.oninput=()=>find(e.dataset.model).model=e.value.trim());
  document.querySelectorAll('[data-test]').forEach(e=>e.onclick=()=>test(find(e.dataset.test),e));
@@ -83,17 +84,21 @@ async function call(p,prompt,max=3000){
  const out=String(d.text||'').trim(); if(!out)throw new Error(p.name+' 沒有回傳文字'); return out;
 }
 async function test(p,b){
- if(!p.key){b.textContent='缺 Key';return}
+ if(!p.key){
+   p.ok=false;p.testMsg='缺少 API Key';
+   renderSettings();renderParticipants();return {ok:false,msg:p.testMsg};
+ }
  b.disabled=true;b.textContent='測試中…';
  try{
    await apiPost({action:'test',provider:p.id,key:p.key});
-   p.ok=true;b.textContent='✓ Key 正常';
+   p.ok=true;p.testMsg='✓ API Key 有效';
+   renderSettings();renderParticipants();
+   return {ok:true,msg:p.testMsg};
  }catch(e){
-   p.ok=false;b.textContent='✕ 失敗';
-   error(p.name+' API 測試失敗：'+e.message);
+   p.ok=false;p.testMsg='✕ '+String(e.message||e);
+   renderSettings();renderParticipants();
+   return {ok:false,msg:p.testMsg};
  }
- renderParticipants();
- setTimeout(()=>{b.disabled=false;b.textContent='測試'},2200);
 }
 function add(who,kind,text,isFinal=false){
  $('empty').hidden=true;
@@ -173,7 +178,24 @@ async function run(){
 }
 $('toggle').onclick=()=>{$('settings').classList.toggle('hide');renderSettings()};
 $('save').onclick=()=>{savePrefs(true);$('settings').classList.add('hide');renderParticipants()};
-$('testSelected').onclick=async()=>{for(const p of selected()){const b=document.querySelector('[data-test="'+p.id+'"]');if(b)await test(p,b)}};
+$('testSelected').onclick=async()=>{
+ const btn=$('testSelected');btn.disabled=true;btn.textContent='測試中…';
+ const results=[];
+ for(const p of selected()){
+   const b=document.querySelector('[data-test="'+p.id+'"]');
+   results.push({p,r:await test(p,b||btn)});
+ }
+ const bad=results.filter(x=>!x.r.ok);
+ const box=$('testSummary');
+ box.classList.remove('hide','bad');
+ if(bad.length){
+   box.classList.add('bad');
+   box.textContent='測試完成：'+bad.length+' 個失敗。請直接看各 AI 欄位下方的紅色錯誤原因。';
+ }else{
+   box.textContent='✓ 測試完成：所有已勾選 API Key 都有效。';
+ }
+ btn.disabled=false;btn.textContent='測試已勾選 AI';
+};
 $('rounds').onchange=()=>savePrefs(false);
 $('final').onchange=()=>savePrefs(false);
 $('go').onclick=run;
