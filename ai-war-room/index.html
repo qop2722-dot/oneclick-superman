@@ -2,10 +2,10 @@
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI 戰情室</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:1020px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}.providers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.provider{border:1px solid #33415f;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}.provider input{width:auto}.provider.on{background:#182647;border-color:#667eea}.provider.ok{box-shadow:inset 0 0 0 1px #2c9b78}.provider .name{font-weight:700}.provider .state{margin-left:auto;font-size:12px;color:#95a3bf}.roundhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.roundtitle{font-weight:800;color:#cbd5e1}.msg{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.warn{background:#332a12;color:#ffe7a3;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:105px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.testmsg{grid-column:2/-1;font-size:13px;padding:7px 9px;border-radius:8px;margin-top:2px}.testmsg.good{background:#102c25;color:#9cf0d0}.testmsg.bad{background:#3a1820;color:#ffdce1}.testsummary{padding:10px 12px;border-radius:10px;background:#101a31;margin:8px 0}.testsummary.bad{background:#3a1820;color:#ffdce1}.hide{display:none}.hint{font-size:13px;color:#aab4c8;margin-top:8px}.count{font-weight:700}.progress{padding:10px 12px;border-radius:10px;background:#101a31;color:#b8c4dc;margin-top:10px}.sep{height:1px;background:#26324b;margin:10px 0}
+*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:1020px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}.providers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.provider{border:1px solid #33415f;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}.provider input{width:auto}.provider.on{background:#182647;border-color:#667eea}.provider.ok{box-shadow:inset 0 0 0 1px #2c9b78}.provider .name{font-weight:700}.provider .state{margin-left:auto;font-size:12px;color:#95a3bf}.roundhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.roundtitle{font-weight:800;color:#cbd5e1}.msg{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.warn{background:#332a12;color:#ffe7a3;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:105px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.testmsg{grid-column:2/-1;font-size:13px;padding:7px 9px;border-radius:8px;margin-top:2px}.testmsg.good{background:#102c25;color:#9cf0d0}.testmsg.bad{background:#3a1820;color:#ffdce1}.testsummary{padding:10px 12px;border-radius:10px;background:#101a31;margin:8px 0}.testsummary.bad{background:#3a1820;color:#ffdce1}.hide{display:none}.hint{font-size:13px;color:#aab4c8;margin-top:8px}.count{font-weight:700}.progress{padding:10px 12px;border-radius:10px;background:#101a31;color:#b8c4dc;margin-top:10px}.sep{height:1px;background:#26324b;margin:10px 0}
 @media(max-width:760px){.controls,.providers,.line,.msg{grid-template-columns:1fr}.provider{min-height:46px}}
 </style></head><body><main>
-<header><div><h1>AI 戰情室</h1><small>Gemini · Mistral · Groq · GPT · v10</small></div><button id="toggle">⚙ API 設定</button></header>
+<header><div><h1>AI 戰情室</h1><small>Gemini · Mistral · Groq · v11</small></div><button id="toggle">⚙ API 設定</button></header>
 
 <section class="card">
   <div class="controls">
@@ -13,7 +13,7 @@
     <label><span>對話輪數</span><select id="rounds"><option value="1">1 輪</option><option value="2" selected>2 輪</option><option value="3">3 輪</option><option value="4">4 輪</option><option value="5">5 輪</option></select></label>
     <label><span>Final 整理 AI</span><select id="final"></select></label>
   </div>
-  <div class="hint"><b>v10 主動防限流：</b>每家 AI 各自記錄 Request / Token 使用量；有官方 rate-limit headers 就自動學習 RPM / TPM 與重置時間，送出前先節流。連續 429 / High demand 會自動熔斷，冷卻後再半開測試。Prompt 超過預算會先壓縮。<b>高速並行：</b>不同 AI 仍同時跑，某一家被限流不拖累其他人。</div>
+  <div class="hint"><b>v11：</b>目前使用 Gemini / Mistral / Groq。Mistral 採更保守的免費額度節流與較短輸出；Gemini 使用較寬鬆的專屬 timeout。三家仍獨立運作，單一 API 限流或逾時不會中止整場。</div>
 </section>
 
 <section class="card">
@@ -46,8 +46,7 @@ const API='https://uimcaonikxuthcapgjqo.supabase.co/functions/v1/multi-ai-collab
 const P=[
  {id:'gemini',name:'Gemini',model:'gemini-3.8-flash',key:'',ok:false,on:true,testMsg:''},
  {id:'mistral',name:'Mistral',model:'mistral-medium-latest',key:'',ok:false,on:true,testMsg:''},
- {id:'groq',name:'Groq',model:'openai/gpt-oss-120b',key:'',ok:false,on:true,testMsg:''},
- {id:'openai',name:'GPT',model:'gpt-5.6',key:'',ok:false,on:false,testMsg:''}
+ {id:'groq',name:'Groq',model:'openai/gpt-oss-120b',key:'',ok:false,on:true,testMsg:''}
 ];
 const $=id=>document.getElementById(id), state={history:[],running:false,cooldowns:{},blocked:{},governor:{}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -56,7 +55,7 @@ const find=id=>P.find(p=>p.id===id);
 const selected=()=>P.filter(p=>p.on);
 
 function gov(p){
- if(!state.governor[p.id])state.governor[p.id]={req:[],tok:[],rpm:null,tpm:null,minGap:p.id==='mistral'?1200:350,lastAt:0,failures:0,circuitUntil:0,halfOpen:false};
+ if(!state.governor[p.id])state.governor[p.id]={req:[],tok:[],rpm:null,tpm:null,minGap:p.id==='mistral'?3500:350,lastAt:0,failures:0,circuitUntil:0,halfOpen:false};
  return state.governor[p.id];
 }
 function providerStateText(p){
@@ -82,7 +81,7 @@ function renderParticipants(){
  });
 }
 function renderSettings(){
- $('rows').innerHTML=P.map(p=>'<div class="line"><strong>'+p.name+'</strong><label><span>API Key</span><input type="password" data-key="'+p.id+'" value="'+esc(p.key)+'" placeholder="'+(p.id==='openai'?'sk-…':p.id==='groq'?'gsk_…':p.id==='gemini'?'AIza…':'Mistral key')+'"></label><label><span>Model</span><input data-model="'+p.id+'" value="'+esc(p.model)+'"></label><button data-test="'+p.id+'">測試</button>'+(p.testMsg?'<div class="testmsg '+(p.ok?'good':'bad')+'">'+esc(p.testMsg)+'</div>':'')+'</div>').join('');
+ $('rows').innerHTML=P.map(p=>'<div class="line"><strong>'+p.name+'</strong><label><span>API Key</span><input type="password" data-key="'+p.id+'" value="'+esc(p.key)+'" placeholder="'+(p.id==='groq'?'gsk_…':p.id==='gemini'?'AIza…':'Mistral key')+'"></label><label><span>Model</span><input data-model="'+p.id+'" value="'+esc(p.model)+'"></label><button data-test="'+p.id+'">測試</button>'+(p.testMsg?'<div class="testmsg '+(p.ok?'good':'bad')+'">'+esc(p.testMsg)+'</div>':'')+'</div>').join('');
  document.querySelectorAll('[data-key]').forEach(e=>e.oninput=()=>{const p=find(e.dataset.key);p.key=e.value.trim();delete state.blocked[p.id];const g=gov(p);g.failures=0;g.circuitUntil=0;g.halfOpen=false;});
  document.querySelectorAll('[data-model]').forEach(e=>e.oninput=()=>find(e.dataset.model).model=e.value.trim());
  document.querySelectorAll('[data-test]').forEach(e=>e.onclick=()=>test(find(e.dataset.test),e));
@@ -159,8 +158,8 @@ function estimateTokens(text,maxOut=0){
  const other=Math.max(0,s.length-cjk);
  return Math.ceil(cjk/1.7+other/4)+Number(maxOut||0);
 }
-function fitPrompt(prompt,retryMode,maxOut){
- const cap=retryMode==='fast'?5200:10000;
+function fitPrompt(prompt,retryMode,maxOut,p){
+ const cap=p?.id==='mistral'?(retryMode==='fast'?3200:6500):(retryMode==='fast'?5200:10000);
  const estimated=estimateTokens(prompt,0);
  if(estimated<=cap)return {text:prompt,estimated};
  const ratio=cap/estimated;
@@ -277,7 +276,7 @@ async function preflight(p,prompt,max,retryMode){
    if(cd>maxWait){const e=new Error(p.name+' cooldown 尚有 '+Math.ceil(cd/1000)+' 秒；本輪先跳過');e.status=429;e.retryAfterMs=cd;throw e;}
    setProgress(p.name+' cooldown '+Math.ceil(cd/1000)+' 秒…');await sleep(cd);
  }
- const fitted=fitPrompt(prompt,retryMode,max);
+ const fitted=fitPrompt(prompt,retryMode,max,p);
  const estimated=estimateTokens(fitted.text,max);
  const budget=localBudgetWait(p,estimated);
  if(budget.wait>0){
@@ -297,7 +296,8 @@ async function call(p,prompt,max=3000,retryMode='normal'){
    const prep=await preflight(p,prompt,max,retryMode);
    try{
      recordAttempt(p,prep.estimated);
-     const d=await apiPost({provider:p.id,model:p.model,key:p.key,prompt:prep.prompt,max},retryMode==='fast'?20000:35000);
+     const timeoutMs=p.id==='gemini'?(retryMode==='fast'?28000:42000):(retryMode==='fast'?20000:35000);
+     const d=await apiPost({provider:p.id,model:p.model,key:p.key,prompt:prep.prompt,max},timeoutMs);
      noteSuccess(p,d.rate_limit);
      const out=String(d.text||'').trim();
      if(!out)throw new Error(p.name+' 沒有回傳文字');
@@ -440,7 +440,8 @@ async function run(){
            : '閱讀前面已完成輪次的所有觀點，回應分歧、修正錯誤並提出新的補充。不要只是重複上一輪。';
          const prompt='Previous conversation history:\n'+H+'\n\nOriginal user request:\n'+q+'\n\nCompleted previous rounds:\n'+(previousRounds||'(none)')+'\n\nYou are '+p.name+' speaking in round '+r+' of '+total+'. '+roleText+'\n\nBe concise but substantive. Respond directly in the user\'s language.';
          try{
-           const text=await call(p,prompt,950,'fast');
+           const fastMax=p.id==='mistral'?600:950;
+           const text=await call(p,prompt,fastMax,'fast');
            transcript.push({round:r,name:p.name,id:p.id,text});
            add(p.name,'第 '+r+' 輪 · 並行',text);
            spokeThisRound++;
@@ -488,7 +489,8 @@ async function run(){
      if(!candidate)continue;
      setProgress('討論完成 · '+candidate.name+' 正在整理 Final…');
      try{
-       F=await call(candidate,finalPrompt,fast?1600:3200,fast?'fast':'normal');
+       const finalMax=candidate.id==='mistral'?(fast?1000:2200):(fast?1600:3200);
+       F=await call(candidate,finalPrompt,finalMax,fast?'fast':'normal');
        usedFinal=candidate;
        break;
      }catch(e){
