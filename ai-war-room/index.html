@@ -5,7 +5,7 @@
 *{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:1020px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}.providers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.provider{border:1px solid #33415f;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}.provider input{width:auto}.provider.on{background:#182647;border-color:#667eea}.provider.ok{box-shadow:inset 0 0 0 1px #2c9b78}.provider .name{font-weight:700}.provider .state{margin-left:auto;font-size:12px;color:#95a3bf}.roundhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.roundtitle{font-weight:800;color:#cbd5e1}.msg{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.warn{background:#332a12;color:#ffe7a3;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:105px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.testmsg{grid-column:2/-1;font-size:13px;padding:7px 9px;border-radius:8px;margin-top:2px}.testmsg.good{background:#102c25;color:#9cf0d0}.testmsg.bad{background:#3a1820;color:#ffdce1}.testsummary{padding:10px 12px;border-radius:10px;background:#101a31;margin:8px 0}.testsummary.bad{background:#3a1820;color:#ffdce1}.hide{display:none}.hint{font-size:13px;color:#aab4c8;margin-top:8px}.count{font-weight:700}.progress{padding:10px 12px;border-radius:10px;background:#101a31;color:#b8c4dc;margin-top:10px}.sep{height:1px;background:#26324b;margin:10px 0}
 @media(max-width:760px){.controls,.providers,.line,.msg{grid-template-columns:1fr}.provider{min-height:46px}}
 </style></head><body><main>
-<header><div><h1>AI 戰情室</h1><small>Gemini · Mistral · Groq · GPT · v9</small></div><button id="toggle">⚙ API 設定</button></header>
+<header><div><h1>AI 戰情室</h1><small>Gemini · Mistral · Groq · GPT · v10</small></div><button id="toggle">⚙ API 設定</button></header>
 
 <section class="card">
   <div class="controls">
@@ -13,7 +13,7 @@
     <label><span>對話輪數</span><select id="rounds"><option value="1">1 輪</option><option value="2" selected>2 輪</option><option value="3">3 輪</option><option value="4">4 輪</option><option value="5">5 輪</option></select></label>
     <label><span>Final 整理 AI</span><select id="final"></select></label>
   </div>
-  <div class="hint"><b>高速並行：</b>同一輪所有 AI 同時回答；各家 API 有獨立 cooldown。遇到 429 優先照官方 Retry-After，否則用指數退避＋隨機抖動；等待太久就只跳過該 AI。下一輪只帶壓縮後的討論內容，降低 Token 與延遲。<b>逐一辯論：</b>保留同輪即時互看，較慢但討論更細。</div>
+  <div class="hint"><b>v10 主動防限流：</b>每家 AI 各自記錄 Request / Token 使用量；有官方 rate-limit headers 就自動學習 RPM / TPM 與重置時間，送出前先節流。連續 429 / High demand 會自動熔斷，冷卻後再半開測試。Prompt 超過預算會先壓縮。<b>高速並行：</b>不同 AI 仍同時跑，某一家被限流不拖累其他人。</div>
 </section>
 
 <section class="card">
@@ -26,7 +26,7 @@
   <div id="testSummary" class="testsummary hide"></div>
   <div id="rows"></div>
   <label><input id="remember" type="checkbox" style="width:auto"> 記住 API Key 在這台瀏覽器</label>
-  <div class="actions"><button id="testSelected">測試已勾選 AI</button><button id="save" class="pri">完成</button></div>
+  <div class="actions"><button id="resetHealth">重置 API 狀態</button><button id="testSelected">測試已勾選 AI</button><button id="save" class="pri">完成</button></div>
 </div></section>
 
 <section class="card" id="chat">
@@ -49,15 +49,28 @@ const P=[
  {id:'groq',name:'Groq',model:'openai/gpt-oss-120b',key:'',ok:false,on:true,testMsg:''},
  {id:'openai',name:'GPT',model:'gpt-5.6',key:'',ok:false,on:false,testMsg:''}
 ];
-const $=id=>document.getElementById(id), state={history:[],running:false,cooldowns:{},blocked:{}};
+const $=id=>document.getElementById(id), state={history:[],running:false,cooldowns:{},blocked:{},governor:{}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const cut=(s,n=18000)=>String(s||'').slice(0,n);
 const find=id=>P.find(p=>p.id===id);
 const selected=()=>P.filter(p=>p.on);
 
+function gov(p){
+ if(!state.governor[p.id])state.governor[p.id]={req:[],tok:[],rpm:null,tpm:null,minGap:p.id==='mistral'?1200:350,lastAt:0,failures:0,circuitUntil:0,halfOpen:false};
+ return state.governor[p.id];
+}
+function providerStateText(p){
+ const now=Date.now(),g=gov(p);
+ if(state.blocked[p.id])return '⛔ '+state.blocked[p.id];
+ if(g.circuitUntil>now)return '🟡 熔斷 '+Math.ceil((g.circuitUntil-now)/1000)+'s';
+ const cd=Math.max(0,Number(state.cooldowns[p.id]||0)-now);
+ if(cd>0)return '⏳ 冷卻 '+Math.ceil(cd/1000)+'s';
+ if(p.ok)return '✓ 已連線';
+ return p.key?'未測試':'未設定';
+}
 function renderParticipants(){
  const list=selected();
- $('providers').innerHTML=P.map(p=>'<label class="provider '+(p.on?'on ':'')+(p.ok?'ok':'')+'"><input type="checkbox" data-join="'+p.id+'" '+(p.on?'checked':'')+'><span class="name">'+p.name+'</span><span class="state">'+(p.ok?'✓ 已連線':(p.key?'未測試':'未設定'))+'</span></label>').join('');
+ $('providers').innerHTML=P.map(p=>'<label class="provider '+(p.on?'on ':'')+(p.ok?'ok':'')+'"><input type="checkbox" data-join="'+p.id+'" '+(p.on?'checked':'')+'><span class="name">'+p.name+'</span><span class="state">'+esc(providerStateText(p))+'</span></label>').join('');
  $('count').textContent=list.length+' / '+P.length+' 已加入';
  const old=$('final').value;
  $('final').innerHTML=list.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
@@ -70,7 +83,7 @@ function renderParticipants(){
 }
 function renderSettings(){
  $('rows').innerHTML=P.map(p=>'<div class="line"><strong>'+p.name+'</strong><label><span>API Key</span><input type="password" data-key="'+p.id+'" value="'+esc(p.key)+'" placeholder="'+(p.id==='openai'?'sk-…':p.id==='groq'?'gsk_…':p.id==='gemini'?'AIza…':'Mistral key')+'"></label><label><span>Model</span><input data-model="'+p.id+'" value="'+esc(p.model)+'"></label><button data-test="'+p.id+'">測試</button>'+(p.testMsg?'<div class="testmsg '+(p.ok?'good':'bad')+'">'+esc(p.testMsg)+'</div>':'')+'</div>').join('');
- document.querySelectorAll('[data-key]').forEach(e=>e.oninput=()=>find(e.dataset.key).key=e.value.trim());
+ document.querySelectorAll('[data-key]').forEach(e=>e.oninput=()=>{const p=find(e.dataset.key);p.key=e.value.trim();delete state.blocked[p.id];const g=gov(p);g.failures=0;g.circuitUntil=0;g.halfOpen=false;});
  document.querySelectorAll('[data-model]').forEach(e=>e.oninput=()=>find(e.dataset.model).model=e.value.trim());
  document.querySelectorAll('[data-test]').forEach(e=>e.onclick=()=>test(find(e.dataset.test),e));
 }
@@ -140,6 +153,76 @@ async function apiPost(payload,timeoutMs=30000){
 function providerCooldownMs(p){
  return Math.max(0,Number(state.cooldowns[p.id]||0)-Date.now());
 }
+function estimateTokens(text,maxOut=0){
+ const s=String(text||'');
+ const cjk=(s.match(/[\u3400-\u9fff\u3040-\u30ff\uac00-\ud7af]/g)||[]).length;
+ const other=Math.max(0,s.length-cjk);
+ return Math.ceil(cjk/1.7+other/4)+Number(maxOut||0);
+}
+function fitPrompt(prompt,retryMode,maxOut){
+ const cap=retryMode==='fast'?5200:10000;
+ const estimated=estimateTokens(prompt,0);
+ if(estimated<=cap)return {text:prompt,estimated};
+ const ratio=cap/estimated;
+ const target=Math.max(5000,Math.floor(String(prompt).length*ratio));
+ const head=Math.floor(target*.68),tail=Math.max(1000,target-head-20);
+ const text=String(prompt).slice(0,head)+'\n\n…[系統為避免 TPM 限流已壓縮中段內容]…\n\n'+String(prompt).slice(-tail);
+ return {text,estimated:estimateTokens(text,0),compressed:true};
+}
+function parseLimitNumber(v){
+ const n=Number(String(v??'').replace(/[^0-9.]/g,''));
+ return Number.isFinite(n)&&n>0?n:null;
+}
+function cleanupWindow(g){
+ const cutoff=Date.now()-60000;
+ g.req=g.req.filter(t=>t>cutoff);
+ g.tok=g.tok.filter(x=>x.t>cutoff);
+}
+function learnLimits(p,rate){
+ if(!rate)return;
+ const g=gov(p);
+ const reqLimit=parseLimitNumber(rate['x-ratelimit-limit-requests']);
+ const tokLimit=parseLimitNumber(rate['x-ratelimit-limit-tokens']);
+ const reqReset=parseDurationMs(rate['x-ratelimit-reset-requests']);
+ const tokReset=parseDurationMs(rate['x-ratelimit-reset-tokens']);
+ // Only treat a published limit as a per-minute budget when its reset window looks minute-scale.
+ if(reqLimit && reqReset!=null && reqReset<=90000)g.rpm=reqLimit;
+ if(tokLimit && tokReset!=null && tokReset<=90000)g.tpm=tokLimit;
+}
+function recordAttempt(p,estimatedTokens){
+ const g=gov(p),now=Date.now();
+ cleanupWindow(g);
+ g.req.push(now);g.tok.push({t:now,n:estimatedTokens});g.lastAt=now;
+}
+function localBudgetWait(p,estimatedTokens){
+ const g=gov(p);cleanupWindow(g);
+ let wait=0,reason='';
+ if(g.rpm){
+   const soft=Math.max(1,Math.floor(g.rpm*.88));
+   if(g.req.length>=soft){
+     wait=Math.max(wait,(g.req[0]+60000)-Date.now());
+     reason='RPM';
+   }
+ }
+ if(g.tpm){
+   const soft=Math.max(1,Math.floor(g.tpm*.85));
+   let used=g.tok.reduce((a,x)=>a+x.n,0);
+   if(used+estimatedTokens>soft && g.tok.length){
+     let remaining=used+estimatedTokens;
+     for(const x of g.tok){
+       remaining-=x.n;
+       if(remaining<=soft){
+         wait=Math.max(wait,(x.t+60000)-Date.now());
+         reason=reason?reason+'+TPM':'TPM';
+         break;
+       }
+     }
+   }
+ }
+ const gap=Math.max(0,(g.lastAt+g.minGap)-Date.now());
+ if(gap>wait){wait=gap;reason=reason||'Burst guard'}
+ return {wait:Math.max(0,wait),reason};
+}
 function classifyError(e){
  const msg=String(e?.message||'');
  const low=msg.toLowerCase();
@@ -158,7 +241,9 @@ function classifyError(e){
  }
  return {kind:'other',retry:false,label:'其他錯誤'};
 }
-function updateCooldownFromSuccess(p,rate){
+function noteSuccess(p,rate){
+ const g=gov(p);g.failures=0;g.circuitUntil=0;g.halfOpen=false;
+ learnLimits(p,rate);
  if(!rate)return;
  const req=Number(rate['x-ratelimit-remaining-requests']);
  const tok=Number(rate['x-ratelimit-remaining-tokens']);
@@ -167,60 +252,80 @@ function updateCooldownFromSuccess(p,rate){
  if(Number.isFinite(tok)&&tok<=0)ms=Math.max(ms,parseDurationMs(rate['x-ratelimit-reset-tokens'])||0);
  if(ms>0)state.cooldowns[p.id]=Math.max(Number(state.cooldowns[p.id]||0),Date.now()+ms);
 }
-async function honorCooldown(p,retryMode){
+function openCircuit(p,waitMs){
+ const g=gov(p);g.failures++;
+ if(g.failures>=2){
+   const base=Math.min(120000,15000*Math.pow(2,Math.min(2,g.failures-2)));
+   g.circuitUntil=Date.now()+Math.max(waitMs||0,base);
+   g.halfOpen=false;
+   renderParticipants();
+ }
+}
+async function preflight(p,prompt,max,retryMode){
  if(state.blocked[p.id]){
-   const b=state.blocked[p.id];
-   const e=new Error(p.name+' 本次執行已停用：'+b);
-   e.status=402;
-   throw e;
+   const e=new Error(p.name+' 本次工作階段已停用：'+state.blocked[p.id]);e.status=402;throw e;
  }
- const ms=providerCooldownMs(p);
- if(ms<=0)return;
- const maxWait=retryMode==='fast'?7000:20000;
- if(ms>maxWait){
-   const e=new Error(p.name+' 仍在 cooldown，約 '+Math.ceil(ms/1000)+' 秒後可再試；本輪先跳過');
-   e.status=429;e.retryAfterMs=ms;throw e;
+ const g=gov(p),now=Date.now();
+ if(g.circuitUntil>now){
+   const remain=g.circuitUntil-now;
+   const e=new Error(p.name+' 熔斷器開啟，約 '+Math.ceil(remain/1000)+' 秒後半開測試；本輪先跳過');e.status=429;e.retryAfterMs=remain;throw e;
  }
- setProgress(p.name+' cooldown '+Math.ceil(ms/1000)+' 秒…');
- await sleep(ms);
+ if(g.circuitUntil && g.circuitUntil<=now){g.halfOpen=true;g.circuitUntil=0;}
+ const cd=providerCooldownMs(p);
+ if(cd>0){
+   const maxWait=retryMode==='fast'?6500:18000;
+   if(cd>maxWait){const e=new Error(p.name+' cooldown 尚有 '+Math.ceil(cd/1000)+' 秒；本輪先跳過');e.status=429;e.retryAfterMs=cd;throw e;}
+   setProgress(p.name+' cooldown '+Math.ceil(cd/1000)+' 秒…');await sleep(cd);
+ }
+ const fitted=fitPrompt(prompt,retryMode,max);
+ const estimated=estimateTokens(fitted.text,max);
+ const budget=localBudgetWait(p,estimated);
+ if(budget.wait>0){
+   const maxWait=retryMode==='fast'?4500:15000;
+   if(budget.wait>maxWait){
+     const e=new Error(p.name+' 主動節流：預估將碰到 '+budget.reason+'，約 '+Math.ceil(budget.wait/1000)+' 秒後再試；本輪先跳過');e.status=429;e.retryAfterMs=budget.wait;throw e;
+   }
+   setProgress(p.name+' 主動節流 '+budget.reason+'，等待 '+Math.ceil(budget.wait/1000)+' 秒…');
+   await sleep(budget.wait);
+ }
+ return {prompt:fitted.text,estimated,compressed:!!fitted.compressed};
 }
 async function call(p,prompt,max=3000,retryMode='normal'){
  const maxAttempts=retryMode==='fast'?2:3;
  let lastErr=null;
  for(let attempt=0;attempt<maxAttempts;attempt++){
-   await honorCooldown(p,retryMode);
+   const prep=await preflight(p,prompt,max,retryMode);
    try{
-     const d=await apiPost({provider:p.id,model:p.model,key:p.key,prompt,max},retryMode==='fast'?20000:35000);
-     updateCooldownFromSuccess(p,d.rate_limit);
+     recordAttempt(p,prep.estimated);
+     const d=await apiPost({provider:p.id,model:p.model,key:p.key,prompt:prep.prompt,max},retryMode==='fast'?20000:35000);
+     noteSuccess(p,d.rate_limit);
      const out=String(d.text||'').trim();
      if(!out)throw new Error(p.name+' 沒有回傳文字');
      return out;
    }catch(e){
      lastErr=e;
      const cls=classifyError(e);
-
      if(cls.kind==='billing'||cls.kind==='auth'){
        state.blocked[p.id]=cls.label;
-       const x=new Error(p.name+'：'+cls.label+'。本次執行不再重試這個 AI。｜'+String(e.message||e));
-       x.status=e.status||402;
-       throw x;
+       renderParticipants();
+       const x=new Error(p.name+'：'+cls.label+'。本工作階段不再呼叫它。｜'+String(e.message||e));x.status=e.status||402;throw x;
      }
-
      if(!cls.retry)throw e;
-
      const serverMs=Number(e.retryAfterMs)||serverRetryMs(e.diagnostic);
-     const base=cls.kind==='capacity'?1200:1500;
-     const expMs=base*Math.pow(2,attempt);
+     const expMs=(cls.kind==='capacity'?1200:1500)*Math.pow(2,attempt);
      const jitter=Math.floor(Math.random()*700);
      const waitMs=Math.max(serverMs||0,expMs+jitter);
      state.cooldowns[p.id]=Date.now()+waitMs;
-
-     const maxWait=retryMode==='fast'?7000:20000;
-     if(attempt===maxAttempts-1||waitMs>maxWait){
-       const x=new Error(String(e.message||cls.label)+'｜'+p.name+' cooldown '+Math.ceil(waitMs/1000)+' 秒；本輪先跳過');
-       x.status=e.status||429;x.retryAfterMs=waitMs;x.diagnostic=e.diagnostic||null;throw x;
+     openCircuit(p,waitMs);
+     const g=gov(p);
+     if(g.circuitUntil>Date.now()){
+       const remain=g.circuitUntil-Date.now();
+       const x=new Error(p.name+' 連續 '+cls.label+'，已啟動熔斷器 '+Math.ceil(remain/1000)+' 秒；本輪先跳過');x.status=429;x.retryAfterMs=remain;throw x;
      }
-
+     const maxWait=retryMode==='fast'?6500:18000;
+     if(attempt===maxAttempts-1||waitMs>maxWait){
+       const x=new Error(String(e.message||cls.label)+'｜'+p.name+' cooldown '+Math.ceil(waitMs/1000)+' 秒；本輪先跳過');x.status=e.status||429;x.retryAfterMs=waitMs;x.diagnostic=e.diagnostic||null;throw x;
+     }
      setProgress(p.name+' '+cls.label+'，'+(serverMs?'依 Retry-After':'指數退避')+'等待 '+Math.ceil(waitMs/1000)+' 秒後重試…');
      await sleep(waitMs);
      state.cooldowns[p.id]=0;
@@ -237,6 +342,7 @@ async function test(p,b){
  try{
    await apiPost({action:'test',provider:p.id,key:p.key});
    p.ok=true;p.testMsg='✓ API Key 有效';
+   const g=gov(p);g.failures=0;g.circuitUntil=0;g.halfOpen=false;state.cooldowns[p.id]=0;
    renderSettings();renderParticipants();
    return {ok:true,msg:p.testMsg};
  }catch(e){
@@ -317,7 +423,7 @@ async function run(){
  const pace=$('pace').value;
  const fast=pace==='fast';
  const preferredFinal=find($('final').value)||ps[0];
- state.blocked={};state.cooldowns={};state.running=true;$('go').disabled=true;add('你','Request',q);
+ state.running=true;$('go').disabled=true;add('你','Request',q);
  const transcript=[],H=priorHistory();
  try{
    for(let r=1;r<=total;r++){
@@ -427,6 +533,7 @@ $('testSelected').onclick=async()=>{
  }
  btn.disabled=false;btn.textContent='測試已勾選 AI';
 };
+$('resetHealth').onclick=()=>{state.cooldowns={};state.blocked={};state.governor={};P.forEach(p=>{p.testMsg='';});renderSettings();renderParticipants();const box=$('testSummary');box.classList.add('hide');};
 $('pace').onchange=()=>savePrefs(false);
 $('rounds').onchange=()=>savePrefs(false);
 $('final').onchange=()=>savePrefs(false);
@@ -434,6 +541,6 @@ $('go').onclick=run;
 $('q').onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')run()};
 $('clear').onclick=()=>{state.history=[];$('msgs').innerHTML='';$('empty').hidden=false;setProgress('')};
 
-load();renderParticipants();renderSettings();
+load();renderParticipants();renderSettings();setInterval(()=>{if(!state.running)renderParticipants()},1000);
 if(!localStorage.getItem('multi-ai-roundtable-v2')&&!localStorage.getItem('multi-ai-simple'))$('settings').classList.remove('hide');
 </script></body></html>
