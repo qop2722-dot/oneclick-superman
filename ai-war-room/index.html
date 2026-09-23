@@ -2,10 +2,10 @@
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI 戰情室</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:1020px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}.providers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.provider{border:1px solid #33415f;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}.provider input{width:auto}.provider.on{background:#182647;border-color:#667eea}.provider.ok{box-shadow:inset 0 0 0 1px #2c9b78}.provider .name{font-weight:700}.provider .state{margin-left:auto;font-size:12px;color:#95a3bf}.roundhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.roundtitle{font-weight:800;color:#cbd5e1}.msg{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.warn{background:#332a12;color:#ffe7a3;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:105px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.testmsg{grid-column:2/-1;font-size:13px;padding:7px 9px;border-radius:8px;margin-top:2px}.testmsg.good{background:#102c25;color:#9cf0d0}.testmsg.bad{background:#3a1820;color:#ffdce1}.testsummary{padding:10px 12px;border-radius:10px;background:#101a31;margin:8px 0}.testsummary.bad{background:#3a1820;color:#ffdce1}.hide{display:none}.hint{font-size:13px;color:#aab4c8;margin-top:8px}.count{font-weight:700}.progress{padding:10px 12px;border-radius:10px;background:#101a31;color:#b8c4dc;margin-top:10px}.sep{height:1px;background:#26324b;margin:10px 0}
+*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:1020px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}.providers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.provider{border:1px solid #33415f;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}.provider input{width:auto}.provider.on{background:#182647;border-color:#667eea}.provider.ok{box-shadow:inset 0 0 0 1px #2c9b78}.provider .name{font-weight:700}.provider .state{margin-left:auto;font-size:12px;color:#95a3bf}.roundhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.roundtitle{font-weight:800;color:#cbd5e1}.msg{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.warn{background:#332a12;color:#ffe7a3;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:105px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.testmsg{grid-column:2/-1;font-size:13px;padding:7px 9px;border-radius:8px;margin-top:2px}.testmsg.good{background:#102c25;color:#9cf0d0}.testmsg.bad{background:#3a1820;color:#ffdce1}.testsummary{padding:10px 12px;border-radius:10px;background:#101a31;margin:8px 0}.testsummary.bad{background:#3a1820;color:#ffdce1}.hide{display:none}.hint{font-size:13px;color:#aab4c8;margin-top:8px}.count{font-weight:700}.progress{padding:10px 12px;border-radius:10px;background:#101a31;color:#b8c4dc;margin-top:10px}.pending{padding:12px;border-radius:12px;background:#30270f;border:1px solid #6b581f;color:#ffe7a3;margin-top:10px}.pending .actions{margin-top:8px}.sep{height:1px;background:#26324b;margin:10px 0}
 @media(max-width:760px){.controls,.providers,.line,.msg{grid-template-columns:1fr}.provider{min-height:46px}}
 </style></head><body><main>
-<header><div><h1>AI 戰情室</h1><small>Gemini · Mistral · Groq · v11</small></div><button id="toggle">⚙ API 設定</button></header>
+<header><div><h1>AI 戰情室</h1><small>Gemini · Mistral · Groq · v12</small></div><button id="toggle">⚙ API 設定</button></header>
 
 <section class="card">
   <div class="controls">
@@ -13,7 +13,7 @@
     <label><span>對話輪數</span><select id="rounds"><option value="1">1 輪</option><option value="2" selected>2 輪</option><option value="3">3 輪</option><option value="4">4 輪</option><option value="5">5 輪</option></select></label>
     <label><span>Final 整理 AI</span><select id="final"></select></label>
   </div>
-  <div class="hint"><b>v11：</b>目前使用 Gemini / Mistral / Groq。Mistral 採更保守的免費額度節流與較短輸出；Gemini 使用較寬鬆的專屬 timeout。三家仍獨立運作，單一 API 限流或逾時不會中止整場。</div>
+  <div class="hint"><b>v12 完整會議制：</b>你勾選幾個 AI，每一輪就必須全部成功發言才算完成；少一個就不進下一輪，也不產生 Final。429、High demand、逾時會在背景等待後重試；若暫時仍無法完成，會停在「等待缺席 AI」，之後只重試缺席者，不重跑已完成回答。</div>
 </section>
 
 <section class="card">
@@ -32,6 +32,7 @@
 <section class="card" id="chat">
   <p id="empty" class="muted">選擇至少 2 個 AI、設定輪數，輸入問題後開始。每一輪所有參與者都會看到前面的討論再繼續發言。</p>
   <div id="progress" class="progress hide"></div>
+  <div id="pendingBox" class="pending hide"><div id="pendingText"></div><div class="actions"><button id="retryMissing" class="pri">只重試缺席 AI</button></div></div>
   <div id="msgs"></div>
 </section>
 
@@ -48,7 +49,7 @@ const P=[
  {id:'mistral',name:'Mistral',model:'mistral-medium-latest',key:'',ok:false,on:true,testMsg:''},
  {id:'groq',name:'Groq',model:'openai/gpt-oss-120b',key:'',ok:false,on:true,testMsg:''}
 ];
-const $=id=>document.getElementById(id), state={history:[],running:false,cooldowns:{},blocked:{},governor:{}};
+const $=id=>document.getElementById(id), state={history:[],running:false,cooldowns:{},blocked:{},governor:{},session:null};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const cut=(s,n=18000)=>String(s||'').slice(0,n);
 const find=id=>P.find(p=>p.id===id);
@@ -413,107 +414,182 @@ function load(){
    }
  }catch{}
 }
-async function run(){
- if(state.running)return;
- const q=$('q').value.trim();if(!q)return;
- const ps=selected(); if(ps.length<2)return error('至少要勾選 2 個 AI。');
- const missing=ps.filter(p=>!p.key);
- if(missing.length){$('settings').classList.remove('hide');return error('請先填入已勾選 AI 的 API Key：'+missing.map(p=>p.name).join('、'))}
- const total=Number($('rounds').value)||1;
- const pace=$('pace').value;
- const fast=pace==='fast';
- const preferredFinal=find($('final').value)||ps[0];
- state.running=true;$('go').disabled=true;add('你','Request',q);
- const transcript=[],H=priorHistory();
+function providerDeadline(p){
+ if(p.id==='mistral')return 120000;
+ if(p.id==='gemini')return 90000;
+ return 60000;
+}
+function retryWaitFromError(p,e){
+ const g=gov(p);
+ const candidates=[
+   Number(e?.retryAfterMs)||0,
+   Math.max(0,Number(state.cooldowns[p.id]||0)-Date.now()),
+   Math.max(0,Number(g.circuitUntil||0)-Date.now())
+ ];
+ let ms=Math.max(...candidates,0);
+ if(!ms)ms=2000+Math.floor(Math.random()*1000);
+ return Math.min(15000,Math.max(1200,ms));
+}
+async function getRequiredReply(p,prompt,max,retryMode){
+ const deadline=Date.now()+providerDeadline(p);
+ let lastErr=null,attempt=0;
+ while(Date.now()<deadline){
+   attempt++;
+   try{
+     const text=await call(p,prompt,max,retryMode);
+     return {ok:true,text};
+   }catch(e){
+     lastErr=e;
+     const cls=classifyError(e);
+     if(cls.kind==='billing'||cls.kind==='auth'){
+       return {ok:false,hard:true,error:String(e.message||e)};
+     }
+     const left=deadline-Date.now();
+     if(left<=1500)break;
+     const wait=Math.min(retryWaitFromError(p,e),Math.max(0,left-500));
+     setProgress(p.name+' 尚未回覆（第 '+attempt+' 次），'+Math.ceil(wait/1000)+' 秒後繼續重試…');
+     await sleep(wait);
+   }
+ }
+ return {ok:false,hard:false,error:String(lastErr?.message||'等待逾時')};
+}
+function showPending(session,missing,label){
+ state.session=session;
+ const names=missing.map(id=>find(id)?.name||id).join('、');
+ $('pendingText').textContent=(label||('第 '+session.round+' 輪尚未完成'))+'：等待 '+names+'。已成功的回答會保留，只會重試缺席 AI。';
+ $('pendingBox').classList.remove('hide');
+ $('go').disabled=true;
+}
+function hidePending(){
+ $('pendingBox').classList.add('hide');
+ $('pendingText').textContent='';
+}
+function roundPrompt(session,p,r,previous,fast,index){
+ const roleText=r===1
+   ? (fast?'提出你自己的完整看法。':'閱讀已出現的同輪發言後，提出自己的看法；可同意、反駁、補充，但不要只是重複。')
+   : '閱讀前面已完成輪次的所有觀點，回應分歧、修正錯誤並提出新的補充。不要只是重複上一輪。';
+ return 'Previous conversation history:\n'+session.H+'\n\nOriginal user request:\n'+session.q+'\n\nDiscussion so far:\n'+(previous||'(none)')+'\n\nYou are '+p.name+' speaking in round '+r+' of '+session.total+'. '+roleText+'\n\nBe concise but substantive. Respond directly in the user\'s language.';
+}
+async function executeSession(session){
+ state.running=true;$('go').disabled=true;hidePending();
  try{
-   for(let r=1;r<=total;r++){
-     roundMarker(r,total);
-     let spokeThisRound=0;
+   while(session.round<=session.total){
+     const r=session.round;
+     if(!session.roundStarted){
+       roundMarker(r,session.total);
+       session.roundStarted=true;
+       session.missing=session.ps.map(p=>p.id);
+     }
 
-     if(fast){
-       const previousRounds=compactDiscussion(transcript,9000,900);
+     const targets=session.ps.filter(p=>session.missing.includes(p.id));
+     const successes=[];
+
+     if(session.fast){
+       const previous=compactDiscussion(session.transcript,9000,900);
        let finished=0;
-       setProgress('第 '+r+' / '+total+' 輪 · '+ps.length+' 個 AI 同時發言中…');
-       await Promise.all(ps.map(async (p,i)=>{
-         const roleText=r===1
-           ? '提出你自己的完整看法。你與其他 AI 此刻是同時作答，不需要等待其他人。'
-           : '閱讀前面已完成輪次的所有觀點，回應分歧、修正錯誤並提出新的補充。不要只是重複上一輪。';
-         const prompt='Previous conversation history:\n'+H+'\n\nOriginal user request:\n'+q+'\n\nCompleted previous rounds:\n'+(previousRounds||'(none)')+'\n\nYou are '+p.name+' speaking in round '+r+' of '+total+'. '+roleText+'\n\nBe concise but substantive. Respond directly in the user\'s language.';
-         try{
-           const fastMax=p.id==='mistral'?600:950;
-           const text=await call(p,prompt,fastMax,'fast');
-           transcript.push({round:r,name:p.name,id:p.id,text});
-           add(p.name,'第 '+r+' 輪 · 並行',text);
-           spokeThisRound++;
-         }catch(e){
-           warn(p.name+' 本輪暫時跳過：'+String(e.message||e));
-         }finally{
-           finished++;
-           setProgress('第 '+r+' / '+total+' 輪 · 已完成 '+finished+' / '+ps.length);
-         }
+       setProgress('第 '+r+' / '+session.total+' 輪 · 等待 '+targets.length+' 個 AI 完成發言…');
+       const results=await Promise.all(targets.map(async p=>{
+         const prompt=roundPrompt(session,p,r,previous,true,0);
+         const fastMax=p.id==='mistral'?600:950;
+         const res=await getRequiredReply(p,prompt,fastMax,'fast');
+         finished++;
+         setProgress('第 '+r+' / '+session.total+' 輪 · 已完成 '+finished+' / '+targets.length+' 個待回覆 AI');
+         return {p,res};
        }));
+       for(const {p,res} of results){
+         if(res.ok){
+           session.transcript.push({round:r,name:p.name,id:p.id,text:res.text});
+           add(p.name,'第 '+r+' 輪 · 完整會議',res.text);
+           successes.push(p.id);
+         }else{
+           session.lastErrors[p.id]=res.error;
+         }
+       }
      }else{
-       for(let i=0;i<ps.length;i++){
-         const p=ps[i];
-         setProgress('第 '+r+' / '+total+' 輪 · '+p.name+' 正在發言…');
-         const previous=compactDiscussion(transcript,14000,1200);
-         const roleText=r===1
-           ? (i===0?'先提出你對問題的完整看法。':'閱讀前面同輪發言後，提出自己的看法；可同意、反駁、補充，但不要只是重複。')
-           : '這是後續討論輪。檢查前面所有人的觀點與修正，指出仍存在的問題、回應其他 AI，並把答案往更可靠完整的方向推進。不要只是重複上一輪。';
-         const prompt='Previous conversation history:\n'+H+'\n\nOriginal user request:\n'+q+'\n\nCurrent multi-AI discussion:\n'+(previous||'(no one has spoken yet)')+'\n\nYou are '+p.name+' speaking in round '+r+' of '+total+'. '+roleText+'\n\nRespond directly in the user\'s language.';
-         try{
-           const text=await call(p,prompt,2400,'normal');
-           transcript.push({round:r,name:p.name,id:p.id,text});
-           add(p.name,'第 '+r+' 輪 · '+(i+1)+'/'+ps.length,text);
-           spokeThisRound++;
-         }catch(e){
-           warn(p.name+' 本輪暫時跳過：'+String(e.message||e));
+       for(let i=0;i<targets.length;i++){
+         const p=targets[i];
+         const previous=compactDiscussion(session.transcript,14000,1200);
+         setProgress('第 '+r+' / '+session.total+' 輪 · 等待 '+p.name+' 發言…');
+         const prompt=roundPrompt(session,p,r,previous,false,i);
+         const max=p.id==='mistral'?1800:2400;
+         const res=await getRequiredReply(p,prompt,max,'normal');
+         if(res.ok){
+           session.transcript.push({round:r,name:p.name,id:p.id,text:res.text});
+           add(p.name,'第 '+r+' 輪 · '+(i+1)+'/'+targets.length,res.text);
+           successes.push(p.id);
+         }else{
+           session.lastErrors[p.id]=res.error;
          }
        }
      }
 
-     if(spokeThisRound===0){
-       throw new Error('本輪所有 AI 都無法回覆。可能是免費 API 額度或速率限制，請稍後再試。');
+     session.missing=session.missing.filter(id=>!successes.includes(id));
+     if(session.missing.length){
+       const detail=session.missing.map(id=>{
+         const p=find(id); const msg=session.lastErrors[id]||'尚未回覆';
+         return (p?.name||id)+'：'+msg;
+       }).join(' ｜ ');
+       warn('本輪尚未完成：'+detail);
+       showPending(session,session.missing,'第 '+r+' 輪尚未完成');
+       return;
      }
+
+     session.round++;
+     session.roundStarted=false;
+     session.missing=[];
    }
 
-   if(!transcript.length) throw new Error('目前沒有任何 AI 成功回覆。');
-
-   const successfulIds=[...new Set(transcript.map(x=>x.id))];
-   const fallbackOrder=[preferredFinal.id,...successfulIds.filter(id=>id!==preferredFinal.id)];
-   let F='',usedFinal=null;
-   const finalPrompt='Original user request:\n'+q+'\n\nMulti-AI discussion:\n'+(fast?compactDiscussion(transcript,18000,1500):compactDiscussion(transcript,26000,2200))+'\n\nYou are the final editor. Synthesize the strongest answer for the user. Resolve disagreements when the discussion provides enough evidence; if a real uncertainty remains, state it clearly. Remove repetition and preserve concrete corrections. Respond in the user\'s language.';
-
-   for(const id of fallbackOrder){
-     const candidate=find(id);
-     if(!candidate)continue;
-     setProgress('討論完成 · '+candidate.name+' 正在整理 Final…');
-     try{
-       const finalMax=candidate.id==='mistral'?(fast?1000:2200):(fast?1600:3200);
-       F=await call(candidate,finalPrompt,finalMax,fast?'fast':'normal');
-       usedFinal=candidate;
-       break;
-     }catch(e){
-       warn(candidate.name+' 無法完成 Final，改由其他已成功發言的 AI 接手。');
+   if(!session.finalDone){
+     const preferred=find(session.preferredFinalId)||session.ps[0];
+     const finalPrompt='Original user request:\n'+session.q+'\n\nMulti-AI discussion:\n'+(session.fast?compactDiscussion(session.transcript,18000,1500):compactDiscussion(session.transcript,26000,2200))+'\n\nYou are the final editor. Synthesize the strongest answer for the user. Resolve disagreements when possible, preserve concrete corrections, remove repetition, and respond in the user\'s language.';
+     setProgress('所有輪次完整完成 · '+preferred.name+' 正在整理 Final…');
+     const finalMax=preferred.id==='mistral'?(session.fast?1000:2200):(session.fast?1600:3200);
+     const res=await getRequiredReply(preferred,finalPrompt,finalMax,session.fast?'fast':'normal');
+     if(!res.ok){
+       session.finalPending=true;
+       session.lastErrors[preferred.id]=res.error;
+       warn('Final 尚未完成：'+preferred.name+'：'+res.error);
+       showPending(session,[preferred.id],'Final 尚未完成');
+       return;
      }
+     session.finalDone=true;
+     add('Final','由 '+preferred.name+' 整理',res.text,true);
+     state.history.push({role:'u',text:session.q},{role:'a',text:res.text});state.history=state.history.slice(-6);
+     $('q').value='';savePrefs(true);
+     state.session=null;hidePending();
    }
-
-   if(F){
-     add('Final','由 '+usedFinal.name+' 整理',F,true);
-   }else{
-     const latest=transcript[transcript.length-1];
-     F=latest.text;
-     warn('所有 Final 整理嘗試都失敗，先保留最後一個成功回答。');
-     add('Final','暫用 '+latest.name+' 最後成功回答',F,true);
-   }
-
-   state.history.push({role:'u',text:q},{role:'a',text:F});state.history=state.history.slice(-6);
-   $('q').value='';savePrefs(true);
  }catch(e){
    error('執行停止：'+String(e.message||e));
  }finally{
-   state.running=false;$('go').disabled=false;setProgress('');
+   state.running=false;
+   if(!state.session)$('go').disabled=false;
+   setProgress('');
  }
+}
+async function run(){
+ if(state.running||state.session)return;
+ const q=$('q').value.trim();if(!q)return;
+ const ps=selected();if(ps.length<2)return error('至少要勾選 2 個 AI。');
+ const missingKeys=ps.filter(p=>!p.key);
+ if(missingKeys.length){$('settings').classList.remove('hide');return error('請先填入已勾選 AI 的 API Key：'+missingKeys.map(p=>p.name).join('、'))}
+ const session={
+   q,
+   ps,
+   total:Number($('rounds').value)||1,
+   fast:$('pace').value==='fast',
+   preferredFinalId:$('final').value,
+   transcript:[],
+   H:priorHistory(),
+   round:1,
+   roundStarted:false,
+   missing:[],
+   lastErrors:{},
+   finalPending:false,
+   finalDone:false
+ };
+ state.session=session;
+ add('你','Request',q);
+ await executeSession(session);
 }
 $('toggle').onclick=()=>{$('settings').classList.toggle('hide');renderSettings()};
 $('save').onclick=()=>{savePrefs(true);$('settings').classList.add('hide');renderParticipants()};
@@ -535,13 +611,14 @@ $('testSelected').onclick=async()=>{
  }
  btn.disabled=false;btn.textContent='測試已勾選 AI';
 };
+$('retryMissing').onclick=async()=>{if(state.session&&!state.running)await executeSession(state.session);};
 $('resetHealth').onclick=()=>{state.cooldowns={};state.blocked={};state.governor={};P.forEach(p=>{p.testMsg='';});renderSettings();renderParticipants();const box=$('testSummary');box.classList.add('hide');};
 $('pace').onchange=()=>savePrefs(false);
 $('rounds').onchange=()=>savePrefs(false);
 $('final').onchange=()=>savePrefs(false);
 $('go').onclick=run;
 $('q').onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')run()};
-$('clear').onclick=()=>{state.history=[];$('msgs').innerHTML='';$('empty').hidden=false;setProgress('')};
+$('clear').onclick=()=>{state.history=[];state.session=null;$('msgs').innerHTML='';$('empty').hidden=false;hidePending();setProgress('');$('go').disabled=false};
 
 load();renderParticipants();renderSettings();setInterval(()=>{if(!state.running)renderParticipants()},1000);
 if(!localStorage.getItem('multi-ai-roundtable-v2')&&!localStorage.getItem('multi-ai-simple'))$('settings').classList.remove('hide');
