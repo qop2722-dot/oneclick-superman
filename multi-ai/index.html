@@ -2,17 +2,17 @@
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Multi-AI 協作室</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:1020px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}.providers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.provider{border:1px solid #33415f;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}.provider input{width:auto}.provider.on{background:#182647;border-color:#667eea}.provider.ok{box-shadow:inset 0 0 0 1px #2c9b78}.provider .name{font-weight:700}.provider .state{margin-left:auto;font-size:12px;color:#95a3bf}.roundhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.roundtitle{font-weight:800;color:#cbd5e1}.msg{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:105px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.testmsg{grid-column:2/-1;font-size:13px;padding:7px 9px;border-radius:8px;margin-top:2px}.testmsg.good{background:#102c25;color:#9cf0d0}.testmsg.bad{background:#3a1820;color:#ffdce1}.testsummary{padding:10px 12px;border-radius:10px;background:#101a31;margin:8px 0}.testsummary.bad{background:#3a1820;color:#ffdce1}.hide{display:none}.hint{font-size:13px;color:#aab4c8;margin-top:8px}.count{font-weight:700}.progress{padding:10px 12px;border-radius:10px;background:#101a31;color:#b8c4dc;margin-top:10px}.sep{height:1px;background:#26324b;margin:10px 0}
+*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:1020px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}.providers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.provider{border:1px solid #33415f;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}.provider input{width:auto}.provider.on{background:#182647;border-color:#667eea}.provider.ok{box-shadow:inset 0 0 0 1px #2c9b78}.provider .name{font-weight:700}.provider .state{margin-left:auto;font-size:12px;color:#95a3bf}.roundhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.roundtitle{font-weight:800;color:#cbd5e1}.msg{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.warn{background:#332a12;color:#ffe7a3;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:105px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.testmsg{grid-column:2/-1;font-size:13px;padding:7px 9px;border-radius:8px;margin-top:2px}.testmsg.good{background:#102c25;color:#9cf0d0}.testmsg.bad{background:#3a1820;color:#ffdce1}.testsummary{padding:10px 12px;border-radius:10px;background:#101a31;margin:8px 0}.testsummary.bad{background:#3a1820;color:#ffdce1}.hide{display:none}.hint{font-size:13px;color:#aab4c8;margin-top:8px}.count{font-weight:700}.progress{padding:10px 12px;border-radius:10px;background:#101a31;color:#b8c4dc;margin-top:10px}.sep{height:1px;background:#26324b;margin:10px 0}
 @media(max-width:760px){.controls,.providers,.line,.msg{grid-template-columns:1fr}.provider{min-height:46px}}
 </style></head><body><main>
-<header><div><h1>Multi-AI 協作室</h1><small>Gemini · Mistral · Groq · GPT · v3</small></div><button id="toggle">⚙ API 設定</button></header>
+<header><div><h1>Multi-AI 協作室</h1><small>Gemini · Mistral · Groq · GPT · v4</small></div><button id="toggle">⚙ API 設定</button></header>
 
 <section class="card">
   <div class="controls">
     <label><span>對話輪數</span><select id="rounds"><option value="1">1 輪</option><option value="2" selected>2 輪</option><option value="3">3 輪</option><option value="4">4 輪</option><option value="5">5 輪</option></select></label>
     <label><span>Final 整理 AI</span><select id="final"></select></label>
   </div>
-  <div class="hint">每個被勾選的 AI 都發言一次 = 1 輪。至少選 2 個，最多 4 個全部加入。Final 整理不計入輪數。</div>
+  <div class="hint">每個被勾選的 AI 都發言一次 = 1 輪。至少選 2 個，最多 4 個全部加入。Final 整理不計入輪數。若某一家遇到 Rate limit，系統會自動重試；仍失敗就暫時跳過，不會中止整場。</div>
 </section>
 
 <section class="card">
@@ -73,15 +73,38 @@ function renderSettings(){
  document.querySelectorAll('[data-model]').forEach(e=>e.oninput=()=>find(e.dataset.model).model=e.value.trim());
  document.querySelectorAll('[data-test]').forEach(e=>e.onclick=()=>test(find(e.dataset.test),e));
 }
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function apiPost(payload){
  const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
  const d=await r.json().catch(()=>({}));
- if(!r.ok||d.error)throw new Error(d.error||('HTTP '+r.status));
+ if(!r.ok||d.error){
+   const e=new Error(d.error||('HTTP '+r.status));
+   e.status=Number(d.status||r.status||0);
+   throw e;
+ }
  return d;
 }
 async function call(p,prompt,max=3000){
- const d=await apiPost({provider:p.id,model:p.model,key:p.key,prompt,max});
- const out=String(d.text||'').trim(); if(!out)throw new Error(p.name+' 沒有回傳文字'); return out;
+ let lastErr;
+ const waits=[0,4000,12000];
+ for(let attempt=0;attempt<waits.length;attempt++){
+   if(waits[attempt]) {
+     setProgress(p.name+' 觸發 Rate limit，'+Math.round(waits[attempt]/1000)+' 秒後自動重試…');
+     await sleep(waits[attempt]);
+   }
+   try{
+     const d=await apiPost({provider:p.id,model:p.model,key:p.key,prompt,max});
+     const out=String(d.text||'').trim();
+     if(!out)throw new Error(p.name+' 沒有回傳文字');
+     return out;
+   }catch(e){
+     lastErr=e;
+     if(Number(e.status)!==429 && !/rate limit|too many requests|quota/i.test(String(e.message||''))) throw e;
+   }
+ }
+ const e=new Error(p.name+'：Rate limit exceeded（已自動重試 2 次）');
+ e.status=429;
+ throw e;
 }
 async function test(p,b){
  if(!p.key){
@@ -111,6 +134,7 @@ function roundMarker(n,total){
  const e=document.createElement('div');e.className='roundhead';e.innerHTML='<span class="roundtitle">第 '+n+' / '+total+' 輪</span><small>所有參與 AI 各發言一次</small>';$('msgs').appendChild(e);
 }
 function error(t){const e=document.createElement('div');e.className='err';e.textContent=t;$('msgs').appendChild(e)}
+function warn(t){const e=document.createElement('div');e.className='warn';e.textContent=t;$('msgs').appendChild(e)}
 function setProgress(t){$('progress').textContent=t;$('progress').classList.toggle('hide',!t)}
 function priorHistory(){return state.history.slice(-6).map(x=>(x.role==='u'?'User':'Final')+': '+cut(x.text,5000)).join('\n\n')||'(none)'}
 function discussionText(items,max=32000){
@@ -148,12 +172,13 @@ async function run(){
  const ps=selected(); if(ps.length<2)return error('至少要勾選 2 個 AI。');
  const missing=ps.filter(p=>!p.key);
  if(missing.length){$('settings').classList.remove('hide');return error('請先填入已勾選 AI 的 API Key：'+missing.map(p=>p.name).join('、'))}
- const total=Number($('rounds').value)||1, fin=find($('final').value)||ps[0];
+ const total=Number($('rounds').value)||1, preferredFinal=find($('final').value)||ps[0];
  state.running=true;$('go').disabled=true;add('你','Request',q);
- const transcript=[],H=priorHistory();
+ const transcript=[],H=priorHistory(),failed=new Map();
  try{
    for(let r=1;r<=total;r++){
      roundMarker(r,total);
+     let spokeThisRound=0;
      for(let i=0;i<ps.length;i++){
        const p=ps[i];
        setProgress('第 '+r+' / '+total+' 輪 · '+p.name+' 正在發言…');
@@ -162,19 +187,60 @@ async function run(){
          ? (i===0?'先提出你對問題的完整看法。':'閱讀前面同輪發言後，提出自己的看法；可同意、反駁、補充，但不要只是重複。')
          : '這是後續討論輪。檢查前面所有人的觀點與修正，指出仍存在的問題、回應其他 AI，並把答案往更可靠完整的方向推進。不要只是重複上一輪。';
        const prompt='Previous conversation history:\n'+H+'\n\nOriginal user request:\n'+q+'\n\nCurrent multi-AI discussion:\n'+(previous||'(no one has spoken yet)')+'\n\nYou are '+p.name+' speaking in round '+r+' of '+total+'. '+roleText+'\n\nRespond directly in the user\'s language.';
-       const text=await call(p,prompt,2800);
-       transcript.push({round:r,name:p.name,text});
-       add(p.name,'第 '+r+' 輪 · '+(i+1)+'/'+ps.length,text);
+       try{
+         const text=await call(p,prompt,2800);
+         transcript.push({round:r,name:p.name,id:p.id,text});
+         add(p.name,'第 '+r+' 輪 · '+(i+1)+'/'+ps.length,text);
+         spokeThisRound++;
+         failed.delete(p.id);
+       }catch(e){
+         failed.set(p.id,String(e.message||e));
+         warn(p.name+' 本輪暫時跳過：'+String(e.message||e));
+       }
+     }
+     if(spokeThisRound===0){
+       throw new Error('本輪所有 AI 都無法回覆。可能是免費 API 額度或速率限制，請稍後再試。');
      }
    }
-   setProgress('討論完成 · '+fin.name+' 正在整理 Final…');
+
+   if(!transcript.length) throw new Error('目前沒有任何 AI 成功回覆。');
+
+   const successfulIds=[...new Set(transcript.map(x=>x.id))];
+   const fallbackOrder=[preferredFinal.id,...successfulIds.filter(id=>id!==preferredFinal.id)];
+   let F='',usedFinal=null,finalErrs=[];
    const finalPrompt='Original user request:\n'+q+'\n\nMulti-AI discussion:\n'+discussionText(transcript,46000)+'\n\nYou are the final editor. Synthesize the strongest answer for the user. Resolve disagreements when the discussion provides enough evidence; if a real uncertainty remains, state it clearly. Do not mention process unless useful. Remove repetition and preserve concrete corrections. Respond in the user\'s language.';
-   const F=await call(fin,finalPrompt,3800);
-   add('Final','由 '+fin.name+' 整理',F,true);
-   state.history.push({role:'u',text:q},{role:'a',text:F});state.history=state.history.slice(-6);
+
+   for(const id of fallbackOrder){
+     const candidate=find(id);
+     if(!candidate)continue;
+     setProgress('討論完成 · '+candidate.name+' 正在整理 Final…');
+     try{
+       F=await call(candidate,finalPrompt,3800);
+       usedFinal=candidate;
+       break;
+     }catch(e){
+       finalErrs.push(candidate.name+'：'+String(e.message||e));
+       warn(candidate.name+' 無法完成 Final，改由其他已成功發言的 AI 接手。');
+     }
+   }
+
+   if(F){
+     add('Final','由 '+usedFinal.name+' 整理',F,true);
+     state.history.push({role:'u',text:q},{role:'a',text:F});state.history=state.history.slice(-6);
+   }else{
+     const latest=transcript[transcript.length-1];
+     F=latest.text;
+     warn('所有 Final 整理嘗試都失敗，先保留最後一個成功回答，不丟失本次討論成果。');
+     add('Final','暫用 '+latest.name+' 最後成功回答',F,true);
+     state.history.push({role:'u',text:q},{role:'a',text:F});state.history=state.history.slice(-6);
+   }
+
    $('q').value='';savePrefs(true);
- }catch(e){error('執行失敗：'+e.message)}
- finally{state.running=false;$('go').disabled=false;setProgress('')}
+ }catch(e){
+   error('執行停止：'+String(e.message||e));
+ }finally{
+   state.running=false;$('go').disabled=false;setProgress('');
+ }
 }
 $('toggle').onclick=()=>{$('settings').classList.toggle('hide');renderSettings()};
 $('save').onclick=()=>{savePrefs(true);$('settings').classList.add('hide');renderParticipants()};
