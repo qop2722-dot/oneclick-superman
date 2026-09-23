@@ -2,91 +2,174 @@
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Multi-AI 協作室</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:980px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}.providers{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid #33415f;border-radius:999px;padding:7px 10px}.ok{color:#6ee7b7}.msg{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:110px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.status{font-size:12px;color:#95a3bf}.hide{display:none}@media(max-width:700px){.row,.line,.msg{grid-template-columns:1fr}}
+*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:1020px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}.providers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.provider{border:1px solid #33415f;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}.provider input{width:auto}.provider.on{background:#182647;border-color:#667eea}.provider.ok{box-shadow:inset 0 0 0 1px #2c9b78}.provider .name{font-weight:700}.provider .state{margin-left:auto;font-size:12px;color:#95a3bf}.roundhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.roundtitle{font-weight:800;color:#cbd5e1}.msg{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:105px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.hide{display:none}.hint{font-size:13px;color:#aab4c8;margin-top:8px}.count{font-weight:700}.progress{padding:10px 12px;border-radius:10px;background:#101a31;color:#b8c4dc;margin-top:10px}.sep{height:1px;background:#26324b;margin:10px 0}
+@media(max-width:760px){.controls,.providers,.line,.msg{grid-template-columns:1fr}.provider{min-height:46px}}
 </style></head><body><main>
-<header><div><h1>Multi-AI 協作室</h1><small>Gemini · Mistral · Groq</small></div><button id="toggle">⚙ API 設定</button></header>
-<section class="card row"><label><span>模式</span><select id="mode"><option value="collab">協作審查</option><option value="compare">獨立比較</option></select></label><label><span>主寫 AI</span><select id="lead"></select></label><label><span>Final</span><select id="final"></select></label></section>
-<section class="card providers" id="chips"></section>
+<header><div><h1>Multi-AI 協作室</h1><small>Gemini · Mistral · Groq · GPT</small></div><button id="toggle">⚙ API 設定</button></header>
+
+<section class="card">
+  <div class="controls">
+    <label><span>對話輪數</span><select id="rounds"><option value="1">1 輪</option><option value="2" selected>2 輪</option><option value="3">3 輪</option><option value="4">4 輪</option><option value="5">5 輪</option></select></label>
+    <label><span>Final 整理 AI</span><select id="final"></select></label>
+  </div>
+  <div class="hint">每個被勾選的 AI 都發言一次 = 1 輪。至少選 2 個，最多 4 個全部加入。Final 整理不計入輪數。</div>
+</section>
+
+<section class="card">
+  <div class="roundhead"><strong>參與本次對話</strong><span class="count" id="count"></span></div>
+  <div class="providers" id="providers"></div>
+</section>
+
 <section class="card hide" id="settings"><div class="settings">
-<div class="muted">API Key 只用來呼叫模型。若勾選「記住」，會存於你這台瀏覽器；後端只做轉送，不寫入資料庫。</div>
-<div id="rows"></div>
-<label><input id="remember" type="checkbox" style="width:auto"> 記住 API Key 在這台瀏覽器</label>
-<div class="actions"><button id="testAll">測試全部</button><button id="save" class="pri">完成</button></div>
+  <div class="muted">只需要填你要使用的 AI。API Key 會送到獨立轉送後端呼叫對應模型，不寫入資料庫；勾選「記住」後才會存於你這台瀏覽器。</div>
+  <div id="rows"></div>
+  <label><input id="remember" type="checkbox" style="width:auto"> 記住 API Key 在這台瀏覽器</label>
+  <div class="actions"><button id="testSelected">測試已勾選 AI</button><button id="save" class="pri">完成</button></div>
 </div></section>
-<section class="card" id="chat"><p id="empty" class="muted">第一次先按右上角「API 設定」，貼上三組 Key。之後就在這裡直接對話。</p><div id="msgs"></div></section>
-<section class="card"><textarea id="q" placeholder="輸入問題…"></textarea><div class="actions"><button id="clear">清除</button><button id="go" class="pri">開始協作 ↗</button></div></section>
-</main><script>
+
+<section class="card" id="chat">
+  <p id="empty" class="muted">選擇至少 2 個 AI、設定輪數，輸入問題後開始。每一輪所有參與者都會看到前面的討論再繼續發言。</p>
+  <div id="progress" class="progress hide"></div>
+  <div id="msgs"></div>
+</section>
+
+<section class="card">
+  <textarea id="q" placeholder="輸入問題…"></textarea>
+  <div class="actions"><button id="clear">清除</button><button id="go" class="pri">開始多人討論 ↗</button></div>
+</section>
+</main>
+
+<script>
 const API='https://uimcaonikxuthcapgjqo.supabase.co/functions/v1/multi-ai-collab';
 const P=[
-{id:'gemini',name:'Gemini',model:'gemini-3.8-flash',key:'',ok:false},
-{id:'mistral',name:'Mistral',model:'mistral-medium-latest',key:'',ok:false},
-{id:'groq',name:'Groq',model:'openai/gpt-oss-120b',key:'',ok:false}
+ {id:'gemini',name:'Gemini',model:'gemini-3.8-flash',key:'',ok:false,on:true},
+ {id:'mistral',name:'Mistral',model:'mistral-medium-latest',key:'',ok:false,on:true},
+ {id:'groq',name:'Groq',model:'openai/gpt-oss-120b',key:'',ok:false,on:true},
+ {id:'openai',name:'GPT',model:'gpt-5.6',key:'',ok:false,on:false}
 ];
 const $=id=>document.getElementById(id), state={history:[],running:false};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const cut=(s,n=22000)=>String(s||'').slice(0,n);
-function render(){
- $('lead').innerHTML=P.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
- $('final').innerHTML=$('lead').innerHTML;
- $('chips').innerHTML=P.map(p=>'<span class="chip '+(p.ok?'ok':'')+'">'+p.name+(p.ok?' ✓':'')+'</span>').join('');
- $('rows').innerHTML=P.map(p=>'<div class="line"><strong>'+p.name+'</strong><label><span>API Key</span><input type="password" data-key="'+p.id+'" value="'+esc(p.key)+'"></label><label><span>Model</span><input data-model="'+p.id+'" value="'+esc(p.model)+'"></label><button data-test="'+p.id+'">測試</button></div>').join('');
+const cut=(s,n=18000)=>String(s||'').slice(0,n);
+const find=id=>P.find(p=>p.id===id);
+const selected=()=>P.filter(p=>p.on);
+
+function renderParticipants(){
+ const list=selected();
+ $('providers').innerHTML=P.map(p=>'<label class="provider '+(p.on?'on ':'')+(p.ok?'ok':'')+'"><input type="checkbox" data-join="'+p.id+'" '+(p.on?'checked':'')+'><span class="name">'+p.name+'</span><span class="state">'+(p.ok?'✓ 已連線':(p.key?'未測試':'未設定'))+'</span></label>').join('');
+ $('count').textContent=list.length+' / '+P.length+' 已加入';
+ const old=$('final').value;
+ $('final').innerHTML=list.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
+ if(list.some(p=>p.id===old))$('final').value=old;
+ document.querySelectorAll('[data-join]').forEach(e=>e.onchange=()=>{
+   const p=find(e.dataset.join);
+   if(!e.checked && selected().length<=2){e.checked=true;return error('至少要保留 2 個 AI 參與對話。')}
+   p.on=e.checked; renderParticipants(); savePrefs(false);
+ });
+}
+function renderSettings(){
+ $('rows').innerHTML=P.map(p=>'<div class="line"><strong>'+p.name+'</strong><label><span>API Key</span><input type="password" data-key="'+p.id+'" value="'+esc(p.key)+'" placeholder="'+(p.id==='openai'?'sk-…':p.id==='groq'?'gsk_…':p.id==='gemini'?'AIza…':'Mistral key')+'"></label><label><span>Model</span><input data-model="'+p.id+'" value="'+esc(p.model)+'"></label><button data-test="'+p.id+'">測試</button></div>').join('');
  document.querySelectorAll('[data-key]').forEach(e=>e.oninput=()=>find(e.dataset.key).key=e.value.trim());
  document.querySelectorAll('[data-model]').forEach(e=>e.oninput=()=>find(e.dataset.model).model=e.value.trim());
  document.querySelectorAll('[data-test]').forEach(e=>e.onclick=()=>test(find(e.dataset.test),e));
 }
-function find(id){return P.find(p=>p.id===id)}
-async function call(p,prompt,max=3500){
+async function call(p,prompt,max=3000){
  const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({provider:p.id,model:p.model,key:p.key,prompt,max})});
  const d=await r.json().catch(()=>({}));
  if(!r.ok||d.error)throw new Error(d.error||('HTTP '+r.status));
- return String(d.text||'').trim();
+ const out=String(d.text||'').trim(); if(!out)throw new Error(p.name+' 沒有回傳文字'); return out;
 }
 async function test(p,b){
  if(!p.key){b.textContent='缺 Key';return}
  b.disabled=true;b.textContent='測試中…';
- try{await call(p,'Reply exactly OK',32);p.ok=true;b.textContent='✓ 成功'}catch(e){p.ok=false;b.textContent='失敗'}
- renderChips();setTimeout(()=>{b.disabled=false;b.textContent='測試'},1400);
+ try{await call(p,'Reply exactly OK',32);p.ok=true;b.textContent='✓ 成功'}
+ catch(e){p.ok=false;b.textContent='失敗'}
+ renderParticipants();setTimeout(()=>{b.disabled=false;b.textContent='測試'},1400);
 }
-function renderChips(){$('chips').innerHTML=P.map(p=>'<span class="chip '+(p.ok?'ok':'')+'">'+p.name+(p.ok?' ✓':'')+'</span>').join('')}
-function add(who,kind,text,final=false){$('empty').hidden=true;const e=document.createElement('div');e.className='msg '+(final?'final':'');e.innerHTML='<div><b>'+esc(who)+'</b><br><small>'+esc(kind)+'</small></div><div class="bubble"></div>';e.querySelector('.bubble').textContent=text;$('msgs').appendChild(e);window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}
+function add(who,kind,text,isFinal=false){
+ $('empty').hidden=true;
+ const e=document.createElement('div');e.className='msg '+(isFinal?'final':'');
+ e.innerHTML='<div><b>'+esc(who)+'</b><br><small>'+esc(kind)+'</small></div><div class="bubble"></div>';
+ e.querySelector('.bubble').textContent=text;$('msgs').appendChild(e);
+ window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+function roundMarker(n,total){
+ const e=document.createElement('div');e.className='roundhead';e.innerHTML='<span class="roundtitle">第 '+n+' / '+total+' 輪</span><small>所有參與 AI 各發言一次</small>';$('msgs').appendChild(e);
+}
 function error(t){const e=document.createElement('div');e.className='err';e.textContent=t;$('msgs').appendChild(e)}
-function hist(){return state.history.slice(-8).map(x=>(x.role==='u'?'User':'Assistant')+': '+cut(x.text,6000)).join('\n\n')||'(none)'}
-function block(xs){return xs.map(x=>'### '+x.name+'\n'+cut(x.text)).join('\n\n')}
-async function run(){
- if(state.running)return;const q=$('q').value.trim();if(!q)return;
- const missing=P.filter(p=>!p.key);if(missing.length){$('settings').classList.remove('hide');return error('請先填 API Key：'+missing.map(x=>x.name).join('、'))}
- state.running=true;$('go').disabled=true;add('你','Request',q);
- try{
-  const H=hist(),lead=find($('lead').value),fin=find($('final').value);let F='';
-  if($('mode').value==='compare'){
-    const ans=await Promise.all(P.map(async p=>({name:p.name,text:await call(p,'History:\n'+H+'\n\nUser:\n'+q+'\n\nAnswer independently and directly.')})));
-    ans.forEach(x=>add(x.name,'Independent',x.text));
-    F=await call(fin,'User:\n'+q+'\n\nAnswers:\n'+block(ans)+'\n\nSynthesize the best corrected final answer. Resolve conflicts, remove repetition.');
-  }else{
-    const prop=await call(lead,'History:\n'+H+'\n\nUser:\n'+q+'\n\nGive a concrete first-pass answer for peer review.');
-    add(lead.name,'Lead proposal',prop);
-    const revs=await Promise.all(P.filter(p=>p.id!==lead.id).map(async p=>({name:p.name,text:await call(p,'User:\n'+q+'\n\nLead answer:\n'+cut(prop)+'\n\nReview critically. Find meaningful errors or omissions and give exact corrections.')})));
-    revs.forEach(x=>add(x.name,'Review',x.text));
-    const revised=await call(lead,'User:\n'+q+'\n\nOriginal:\n'+cut(prop)+'\n\nReviews:\n'+block(revs)+'\n\nRevise into a stronger complete answer. Accept valid corrections.');
-    add(lead.name,'Revision',revised);
-    F=await call(fin,'User:\n'+q+'\n\nTranscript:\n'+block([{name:lead.name+' proposal',text:prop},...revs,{name:lead.name+' revision',text:revised}])+'\n\nGive the final user-facing answer. Keep valid corrections and remove repetition.');
-  }
-  add('Final','Final · '+fin.name,F,true);
-  state.history.push({role:'u',text:q},{role:'a',text:F});state.history=state.history.slice(-8);$('q').value='';save();
- }catch(e){error('執行失敗：'+e.message)}
- finally{state.running=false;$('go').disabled=false}
+function setProgress(t){$('progress').textContent=t;$('progress').classList.toggle('hide',!t)}
+function priorHistory(){return state.history.slice(-6).map(x=>(x.role==='u'?'User':'Final')+': '+cut(x.text,5000)).join('\n\n')||'(none)'}
+function discussionText(items,max=32000){
+ const parts=[];let used=0;
+ for(let i=items.length-1;i>=0;i--){
+   const s='['+items[i].round+'｜'+items[i].name+']\n'+cut(items[i].text,4200);
+   if(parts.length && used+s.length>max)break;
+   parts.unshift(s);used+=s.length;
+ }
+ return parts.join('\n\n');
 }
-function save(){
- if($('remember').checked)localStorage.setItem('multi-ai-simple',JSON.stringify({p:P.map(x=>({id:x.id,key:x.key,model:x.model})),lead:$('lead').value,final:$('final').value}));
- else localStorage.removeItem('multi-ai-simple');
+function savePrefs(includeKeys=true){
+ const data={providers:P.map(p=>({id:p.id,on:p.on,model:p.model,key:includeKeys&&$('remember').checked?p.key:''})),rounds:$('rounds').value,final:$('final').value,remember:$('remember').checked};
+ localStorage.setItem('multi-ai-roundtable-v2',JSON.stringify(data));
 }
 function load(){
- try{const d=JSON.parse(localStorage.getItem('multi-ai-simple')||'null');if(d?.p){d.p.forEach(x=>{const p=find(x.id);if(p){p.key=x.key||'';p.model=x.model||p.model}});$('remember').checked=true;setTimeout(()=>{if(d.lead)$('lead').value=d.lead;if(d.final)$('final').value=d.final},0)}}catch{}
+ try{
+   let d=JSON.parse(localStorage.getItem('multi-ai-roundtable-v2')||'null');
+   if(!d){
+     const old=JSON.parse(localStorage.getItem('multi-ai-simple')||'null');
+     if(old?.p)d={providers:old.p.map(x=>({id:x.id,key:x.key||'',model:x.model,on:x.id!=='openai'})),rounds:'2',remember:true};
+   }
+   if(d?.providers){
+     d.providers.forEach(x=>{const p=find(x.id);if(p){p.on=typeof x.on==='boolean'?x.on:p.on;p.model=x.model||p.model;p.key=x.key||''}});
+     if(selected().length<2){P[0].on=true;P[1].on=true}
+     $('remember').checked=!!d.remember;
+     if(d.rounds)$('rounds').value=d.rounds;
+     setTimeout(()=>{if(d.final&&selected().some(p=>p.id===d.final))$('final').value=d.final},0);
+   }
+ }catch{}
 }
-$('toggle').onclick=()=>$('settings').classList.toggle('hide');
-$('save').onclick=()=>{save();$('settings').classList.add('hide')};
-$('testAll').onclick=async()=>{for(const p of P){const b=document.querySelector('[data-test="'+p.id+'"]');await test(p,b)}};
-$('go').onclick=run;$('q').onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')run()};
-$('clear').onclick=()=>{state.history=[];$('msgs').innerHTML='';$('empty').hidden=false};
-render();load();render();if(!localStorage.getItem('multi-ai-simple'))$('settings').classList.remove('hide');
+async function run(){
+ if(state.running)return;
+ const q=$('q').value.trim();if(!q)return;
+ const ps=selected(); if(ps.length<2)return error('至少要勾選 2 個 AI。');
+ const missing=ps.filter(p=>!p.key);
+ if(missing.length){$('settings').classList.remove('hide');return error('請先填入已勾選 AI 的 API Key：'+missing.map(p=>p.name).join('、'))}
+ const total=Number($('rounds').value)||1, fin=find($('final').value)||ps[0];
+ state.running=true;$('go').disabled=true;add('你','Request',q);
+ const transcript=[],H=priorHistory();
+ try{
+   for(let r=1;r<=total;r++){
+     roundMarker(r,total);
+     for(let i=0;i<ps.length;i++){
+       const p=ps[i];
+       setProgress('第 '+r+' / '+total+' 輪 · '+p.name+' 正在發言…');
+       const previous=discussionText(transcript);
+       const roleText=r===1
+         ? (i===0?'先提出你對問題的完整看法。':'閱讀前面同輪發言後，提出自己的看法；可同意、反駁、補充，但不要只是重複。')
+         : '這是後續討論輪。檢查前面所有人的觀點與修正，指出仍存在的問題、回應其他 AI，並把答案往更可靠完整的方向推進。不要只是重複上一輪。';
+       const prompt='Previous conversation history:\n'+H+'\n\nOriginal user request:\n'+q+'\n\nCurrent multi-AI discussion:\n'+(previous||'(no one has spoken yet)')+'\n\nYou are '+p.name+' speaking in round '+r+' of '+total+'. '+roleText+'\n\nRespond directly in the user\'s language.';
+       const text=await call(p,prompt,2800);
+       transcript.push({round:r,name:p.name,text});
+       add(p.name,'第 '+r+' 輪 · '+(i+1)+'/'+ps.length,text);
+     }
+   }
+   setProgress('討論完成 · '+fin.name+' 正在整理 Final…');
+   const finalPrompt='Original user request:\n'+q+'\n\nMulti-AI discussion:\n'+discussionText(transcript,46000)+'\n\nYou are the final editor. Synthesize the strongest answer for the user. Resolve disagreements when the discussion provides enough evidence; if a real uncertainty remains, state it clearly. Do not mention process unless useful. Remove repetition and preserve concrete corrections. Respond in the user\'s language.';
+   const F=await call(fin,finalPrompt,3800);
+   add('Final','由 '+fin.name+' 整理',F,true);
+   state.history.push({role:'u',text:q},{role:'a',text:F});state.history=state.history.slice(-6);
+   $('q').value='';savePrefs(true);
+ }catch(e){error('執行失敗：'+e.message)}
+ finally{state.running=false;$('go').disabled=false;setProgress('')}
+}
+$('toggle').onclick=()=>{$('settings').classList.toggle('hide');renderSettings()};
+$('save').onclick=()=>{savePrefs(true);$('settings').classList.add('hide');renderParticipants()};
+$('testSelected').onclick=async()=>{for(const p of selected()){const b=document.querySelector('[data-test="'+p.id+'"]');if(b)await test(p,b)}};
+$('rounds').onchange=()=>savePrefs(false);
+$('final').onchange=()=>savePrefs(false);
+$('go').onclick=run;
+$('q').onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')run()};
+$('clear').onclick=()=>{state.history=[];$('msgs').innerHTML='';$('empty').hidden=false;setProgress('')};
+
+load();renderParticipants();renderSettings();
+if(!localStorage.getItem('multi-ai-roundtable-v2')&&!localStorage.getItem('multi-ai-simple'))$('settings').classList.remove('hide');
 </script></body></html>
