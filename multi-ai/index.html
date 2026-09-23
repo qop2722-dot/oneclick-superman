@@ -21,7 +21,7 @@
 </section>
 
 <section class="card hide" id="settings"><div class="settings">
-  <div class="muted">只需要填你要使用的 AI。API Key 會送到獨立轉送後端呼叫對應模型，不寫入資料庫；勾選「記住」後才會存於你這台瀏覽器。</div>
+  <div class="muted">只需要填你要使用的 AI。現在「測試」只驗證 API Key 是否有效，不會因指定模型不可用而誤判。失敗時會在下方直接顯示原始錯誤原因。API Key 由轉送後端呼叫對應模型，不寫入資料庫；勾選「記住」後才會存於你這台瀏覽器。</div>
   <div id="rows"></div>
   <label><input id="remember" type="checkbox" style="width:auto"> 記住 API Key 在這台瀏覽器</label>
   <div class="actions"><button id="testSelected">測試已勾選 AI</button><button id="save" class="pri">完成</button></div>
@@ -72,18 +72,28 @@ function renderSettings(){
  document.querySelectorAll('[data-model]').forEach(e=>e.oninput=()=>find(e.dataset.model).model=e.value.trim());
  document.querySelectorAll('[data-test]').forEach(e=>e.onclick=()=>test(find(e.dataset.test),e));
 }
-async function call(p,prompt,max=3000){
- const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({provider:p.id,model:p.model,key:p.key,prompt,max})});
+async function apiPost(payload){
+ const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
  const d=await r.json().catch(()=>({}));
  if(!r.ok||d.error)throw new Error(d.error||('HTTP '+r.status));
+ return d;
+}
+async function call(p,prompt,max=3000){
+ const d=await apiPost({provider:p.id,model:p.model,key:p.key,prompt,max});
  const out=String(d.text||'').trim(); if(!out)throw new Error(p.name+' 沒有回傳文字'); return out;
 }
 async function test(p,b){
  if(!p.key){b.textContent='缺 Key';return}
  b.disabled=true;b.textContent='測試中…';
- try{await call(p,'Reply exactly OK',32);p.ok=true;b.textContent='✓ 成功'}
- catch(e){p.ok=false;b.textContent='失敗'}
- renderParticipants();setTimeout(()=>{b.disabled=false;b.textContent='測試'},1400);
+ try{
+   await apiPost({action:'test',provider:p.id,key:p.key});
+   p.ok=true;b.textContent='✓ Key 正常';
+ }catch(e){
+   p.ok=false;b.textContent='✕ 失敗';
+   error(p.name+' API 測試失敗：'+e.message);
+ }
+ renderParticipants();
+ setTimeout(()=>{b.disabled=false;b.textContent='測試'},2200);
 }
 function add(who,kind,text,isFinal=false){
  $('empty').hidden=true;
