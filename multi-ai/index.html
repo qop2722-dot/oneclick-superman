@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Multi-AI 協作室</title>
+<title>AI 戰情室</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:1020px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}.providers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.provider{border:1px solid #33415f;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}.provider input{width:auto}.provider.on{background:#182647;border-color:#667eea}.provider.ok{box-shadow:inset 0 0 0 1px #2c9b78}.provider .name{font-weight:700}.provider .state{margin-left:auto;font-size:12px;color:#95a3bf}.roundhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.roundtitle{font-weight:800;color:#cbd5e1}.msg{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.warn{background:#332a12;color:#ffe7a3;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:105px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.testmsg{grid-column:2/-1;font-size:13px;padding:7px 9px;border-radius:8px;margin-top:2px}.testmsg.good{background:#102c25;color:#9cf0d0}.testmsg.bad{background:#3a1820;color:#ffdce1}.testsummary{padding:10px 12px;border-radius:10px;background:#101a31;margin:8px 0}.testsummary.bad{background:#3a1820;color:#ffdce1}.hide{display:none}.hint{font-size:13px;color:#aab4c8;margin-top:8px}.count{font-weight:700}.progress{padding:10px 12px;border-radius:10px;background:#101a31;color:#b8c4dc;margin-top:10px}.sep{height:1px;background:#26324b;margin:10px 0}
 @media(max-width:760px){.controls,.providers,.line,.msg{grid-template-columns:1fr}.provider{min-height:46px}}
 </style></head><body><main>
-<header><div><h1>Multi-AI 協作室</h1><small>Gemini · Mistral · Groq · GPT · v4</small></div><button id="toggle">⚙ API 設定</button></header>
+<header><div><h1>AI 戰情室</h1><small>Gemini · Mistral · Groq · GPT · v5</small></div><button id="toggle">⚙ API 設定</button></header>
 
 <section class="card">
   <div class="controls">
@@ -74,12 +74,35 @@ function renderSettings(){
  document.querySelectorAll('[data-test]').forEach(e=>e.onclick=()=>test(find(e.dataset.test),e));
 }
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function diagnoseRateLimit(d,status){
+ const diag=d?.diagnostic||{};
+ const h=diag.rate_headers||{};
+ const parts=[];
+ const provider=diag.provider?diag.provider.toUpperCase():'API';
+ parts.push(provider+' HTTP '+(diag.http_status||status||429));
+ if(diag.code)parts.push(String(diag.code));
+ const msg=String(diag.message||d?.error||'Rate limit exceeded');
+ const low=msg.toLowerCase();
+ if(/tokens? per minute|tpm|token/.test(low))parts.push('可能是 TPM / Token 額度');
+ else if(/requests? per minute|rpm/.test(low))parts.push('可能是 RPM / 每分鐘請求數');
+ else if(/requests? per day|rpd|daily|per day/.test(low))parts.push('可能是 RPD / 每日請求數');
+ else if(/quota|resource_exhausted/.test(low))parts.push('可能是配額或專案層級限制');
+ if(h['retry-after'])parts.push('建議 '+h['retry-after']+' 秒後重試');
+ if(h['x-ratelimit-remaining-requests']!==undefined)parts.push('剩餘請求 '+h['x-ratelimit-remaining-requests']);
+ if(h['x-ratelimit-remaining-tokens']!==undefined)parts.push('剩餘 Token '+h['x-ratelimit-remaining-tokens']);
+ if(h['x-ratelimit-reset-requests'])parts.push('請求重置 '+h['x-ratelimit-reset-requests']);
+ if(h['x-ratelimit-reset-tokens'])parts.push('Token 重置 '+h['x-ratelimit-reset-tokens']);
+ parts.push('上游訊息：'+msg);
+ return parts.join('｜');
+}
 async function apiPost(payload){
  const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
  const d=await r.json().catch(()=>({}));
  if(!r.ok||d.error){
-   const e=new Error(d.error||('HTTP '+r.status));
-   e.status=Number(d.status||r.status||0);
+   const status=Number(d.status||r.status||0);
+   const e=new Error(status===429?diagnoseRateLimit(d,status):(d.error||('HTTP '+r.status)));
+   e.status=status;
+   e.diagnostic=d.diagnostic||null;
    throw e;
  }
  return d;
@@ -102,8 +125,9 @@ async function call(p,prompt,max=3000){
      if(Number(e.status)!==429 && !/rate limit|too many requests|quota/i.test(String(e.message||''))) throw e;
    }
  }
- const e=new Error(p.name+'：Rate limit exceeded（已自動重試 2 次）');
+ const e=new Error(p.name+'：'+String(lastErr?.message||'Rate limit exceeded')+'（已自動重試 2 次）');
  e.status=429;
+ e.diagnostic=lastErr?.diagnostic||null;
  throw e;
 }
 async function test(p,b){
