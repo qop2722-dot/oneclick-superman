@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Multi-AI 協作室</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:980px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}.providers{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid #33415f;border-radius:999px;padding:7px 10px}.ok{color:#6ee7b7}.msg{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:110px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.status{font-size:12px;color:#95a3bf}.hide{display:none}@media(max-width:700px){.row,.line,.msg{grid-template-columns:1fr}}
+</style></head><body><main>
+<header><div><h1>Multi-AI 協作室</h1><small>Gemini · Mistral · Groq</small></div><button id="toggle">⚙ API 設定</button></header>
+<section class="card row"><label><span>模式</span><select id="mode"><option value="collab">協作審查</option><option value="compare">獨立比較</option></select></label><label><span>主寫 AI</span><select id="lead"></select></label><label><span>Final</span><select id="final"></select></label></section>
+<section class="card providers" id="chips"></section>
+<section class="card hide" id="settings"><div class="settings">
+<div class="muted">API Key 只用來呼叫模型。若勾選「記住」，會存於你這台瀏覽器；後端只做轉送，不寫入資料庫。</div>
+<div id="rows"></div>
+<label><input id="remember" type="checkbox" style="width:auto"> 記住 API Key 在這台瀏覽器</label>
+<div class="actions"><button id="testAll">測試全部</button><button id="save" class="pri">完成</button></div>
+</div></section>
+<section class="card" id="chat"><p id="empty" class="muted">第一次先按右上角「API 設定」，貼上三組 Key。之後就在這裡直接對話。</p><div id="msgs"></div></section>
+<section class="card"><textarea id="q" placeholder="輸入問題…"></textarea><div class="actions"><button id="clear">清除</button><button id="go" class="pri">開始協作 ↗</button></div></section>
+</main><script>
+const API='https://uimcaonikxuthcapgjqo.supabase.co/functions/v1/multi-ai-collab';
+const P=[
+{id:'gemini',name:'Gemini',model:'gemini-3.8-flash',key:'',ok:false},
+{id:'mistral',name:'Mistral',model:'mistral-medium-latest',key:'',ok:false},
+{id:'groq',name:'Groq',model:'openai/gpt-oss-120b',key:'',ok:false}
+];
+const $=id=>document.getElementById(id), state={history:[],running:false};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const cut=(s,n=22000)=>String(s||'').slice(0,n);
+function render(){
+ $('lead').innerHTML=P.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
+ $('final').innerHTML=$('lead').innerHTML;
+ $('chips').innerHTML=P.map(p=>'<span class="chip '+(p.ok?'ok':'')+'">'+p.name+(p.ok?' ✓':'')+'</span>').join('');
+ $('rows').innerHTML=P.map(p=>'<div class="line"><strong>'+p.name+'</strong><label><span>API Key</span><input type="password" data-key="'+p.id+'" value="'+esc(p.key)+'"></label><label><span>Model</span><input data-model="'+p.id+'" value="'+esc(p.model)+'"></label><button data-test="'+p.id+'">測試</button></div>').join('');
+ document.querySelectorAll('[data-key]').forEach(e=>e.oninput=()=>find(e.dataset.key).key=e.value.trim());
+ document.querySelectorAll('[data-model]').forEach(e=>e.oninput=()=>find(e.dataset.model).model=e.value.trim());
+ document.querySelectorAll('[data-test]').forEach(e=>e.onclick=()=>test(find(e.dataset.test),e));
+}
+function find(id){return P.find(p=>p.id===id)}
+async function call(p,prompt,max=3500){
+ const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({provider:p.id,model:p.model,key:p.key,prompt,max})});
+ const d=await r.json().catch(()=>({}));
+ if(!r.ok||d.error)throw new Error(d.error||('HTTP '+r.status));
+ return String(d.text||'').trim();
+}
+async function test(p,b){
+ if(!p.key){b.textContent='缺 Key';return}
+ b.disabled=true;b.textContent='測試中…';
+ try{await call(p,'Reply exactly OK',32);p.ok=true;b.textContent='✓ 成功'}catch(e){p.ok=false;b.textContent='失敗'}
+ renderChips();setTimeout(()=>{b.disabled=false;b.textContent='測試'},1400);
+}
+function renderChips(){$('chips').innerHTML=P.map(p=>'<span class="chip '+(p.ok?'ok':'')+'">'+p.name+(p.ok?' ✓':'')+'</span>').join('')}
+function add(who,kind,text,final=false){$('empty').hidden=true;const e=document.createElement('div');e.className='msg '+(final?'final':'');e.innerHTML='<div><b>'+esc(who)+'</b><br><small>'+esc(kind)+'</small></div><div class="bubble"></div>';e.querySelector('.bubble').textContent=text;$('msgs').appendChild(e);window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}
+function error(t){const e=document.createElement('div');e.className='err';e.textContent=t;$('msgs').appendChild(e)}
+function hist(){return state.history.slice(-8).map(x=>(x.role==='u'?'User':'Assistant')+': '+cut(x.text,6000)).join('\n\n')||'(none)'}
+function block(xs){return xs.map(x=>'### '+x.name+'\n'+cut(x.text)).join('\n\n')}
+async function run(){
+ if(state.running)return;const q=$('q').value.trim();if(!q)return;
+ const missing=P.filter(p=>!p.key);if(missing.length){$('settings').classList.remove('hide');return error('請先填 API Key：'+missing.map(x=>x.name).join('、'))}
+ state.running=true;$('go').disabled=true;add('你','Request',q);
+ try{
+  const H=hist(),lead=find($('lead').value),fin=find($('final').value);let F='';
+  if($('mode').value==='compare'){
+    const ans=await Promise.all(P.map(async p=>({name:p.name,text:await call(p,'History:\n'+H+'\n\nUser:\n'+q+'\n\nAnswer independently and directly.')})));
+    ans.forEach(x=>add(x.name,'Independent',x.text));
+    F=await call(fin,'User:\n'+q+'\n\nAnswers:\n'+block(ans)+'\n\nSynthesize the best corrected final answer. Resolve conflicts, remove repetition.');
+  }else{
+    const prop=await call(lead,'History:\n'+H+'\n\nUser:\n'+q+'\n\nGive a concrete first-pass answer for peer review.');
+    add(lead.name,'Lead proposal',prop);
+    const revs=await Promise.all(P.filter(p=>p.id!==lead.id).map(async p=>({name:p.name,text:await call(p,'User:\n'+q+'\n\nLead answer:\n'+cut(prop)+'\n\nReview critically. Find meaningful errors or omissions and give exact corrections.')})));
+    revs.forEach(x=>add(x.name,'Review',x.text));
+    const revised=await call(lead,'User:\n'+q+'\n\nOriginal:\n'+cut(prop)+'\n\nReviews:\n'+block(revs)+'\n\nRevise into a stronger complete answer. Accept valid corrections.');
+    add(lead.name,'Revision',revised);
+    F=await call(fin,'User:\n'+q+'\n\nTranscript:\n'+block([{name:lead.name+' proposal',text:prop},...revs,{name:lead.name+' revision',text:revised}])+'\n\nGive the final user-facing answer. Keep valid corrections and remove repetition.');
+  }
+  add('Final','Final · '+fin.name,F,true);
+  state.history.push({role:'u',text:q},{role:'a',text:F});state.history=state.history.slice(-8);$('q').value='';save();
+ }catch(e){error('執行失敗：'+e.message)}
+ finally{state.running=false;$('go').disabled=false}
+}
+function save(){
+ if($('remember').checked)localStorage.setItem('multi-ai-simple',JSON.stringify({p:P.map(x=>({id:x.id,key:x.key,model:x.model})),lead:$('lead').value,final:$('final').value}));
+ else localStorage.removeItem('multi-ai-simple');
+}
+function load(){
+ try{const d=JSON.parse(localStorage.getItem('multi-ai-simple')||'null');if(d?.p){d.p.forEach(x=>{const p=find(x.id);if(p){p.key=x.key||'';p.model=x.model||p.model}});$('remember').checked=true;setTimeout(()=>{if(d.lead)$('lead').value=d.lead;if(d.final)$('final').value=d.final},0)}}catch{}
+}
+$('toggle').onclick=()=>$('settings').classList.toggle('hide');
+$('save').onclick=()=>{save();$('settings').classList.add('hide')};
+$('testAll').onclick=async()=>{for(const p of P){const b=document.querySelector('[data-test="'+p.id+'"]');await test(p,b)}};
+$('go').onclick=run;$('q').onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')run()};
+$('clear').onclick=()=>{state.history=[];$('msgs').innerHTML='';$('empty').hidden=false};
+render();load();render();if(!localStorage.getItem('multi-ai-simple'))$('settings').classList.remove('hide');
+</script></body></html>
