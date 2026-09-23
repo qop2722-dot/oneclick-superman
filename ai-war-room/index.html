@@ -5,7 +5,7 @@
 *{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef3ff;font:15px/1.55 system-ui,-apple-system,"Segoe UI";}main{max-width:1020px;margin:auto;padding:24px 16px 60px}header{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{margin:0;font-size:24px}small,.muted{color:#95a3bf}.card{background:#11182b;border:1px solid #28344e;border-radius:16px;padding:14px;margin-top:12px}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label span{display:block;font-size:12px;color:#95a3bf;margin-bottom:6px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;background:#0d1424;color:#eef3ff;border:1px solid #33415f;border-radius:9px;padding:9px}button{border:0;border-radius:10px;padding:10px 13px;background:#25314a;color:#eef3ff;cursor:pointer}.pri{background:#667eea;font-weight:700}button:disabled{opacity:.45;cursor:not-allowed}.providers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.provider{border:1px solid #33415f;border-radius:12px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}.provider input{width:auto}.provider.on{background:#182647;border-color:#667eea}.provider.ok{box-shadow:inset 0 0 0 1px #2c9b78}.provider .name{font-weight:700}.provider .state{margin-left:auto;font-size:12px;color:#95a3bf}.roundhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}.roundtitle{font-weight:800;color:#cbd5e1}.msg{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid #222e46}.msg:last-child{border:0}.bubble{white-space:pre-wrap;word-break:break-word}.final .bubble{background:#182647;border:1px solid #405782;border-radius:12px;padding:12px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}textarea{min-height:110px;resize:vertical}.err{background:#3a1820;color:#ffdce1;padding:10px;border-radius:10px;margin:10px 0}.warn{background:#332a12;color:#ffe7a3;padding:10px;border-radius:10px;margin:10px 0}.settings{display:grid;gap:10px}.line{display:grid;grid-template-columns:105px 1fr 1fr auto;gap:8px;align-items:end;border-top:1px solid #26324b;padding-top:10px}.line:first-child{border:0}.testmsg{grid-column:2/-1;font-size:13px;padding:7px 9px;border-radius:8px;margin-top:2px}.testmsg.good{background:#102c25;color:#9cf0d0}.testmsg.bad{background:#3a1820;color:#ffdce1}.testsummary{padding:10px 12px;border-radius:10px;background:#101a31;margin:8px 0}.testsummary.bad{background:#3a1820;color:#ffdce1}.hide{display:none}.hint{font-size:13px;color:#aab4c8;margin-top:8px}.count{font-weight:700}.progress{padding:10px 12px;border-radius:10px;background:#101a31;color:#b8c4dc;margin-top:10px}.sep{height:1px;background:#26324b;margin:10px 0}
 @media(max-width:760px){.controls,.providers,.line,.msg{grid-template-columns:1fr}.provider{min-height:46px}}
 </style></head><body><main>
-<header><div><h1>AI 戰情室</h1><small>Gemini · Mistral · Groq · GPT · v8</small></div><button id="toggle">⚙ API 設定</button></header>
+<header><div><h1>AI 戰情室</h1><small>Gemini · Mistral · Groq · GPT · v9</small></div><button id="toggle">⚙ API 設定</button></header>
 
 <section class="card">
   <div class="controls">
@@ -49,7 +49,7 @@ const P=[
  {id:'groq',name:'Groq',model:'openai/gpt-oss-120b',key:'',ok:false,on:true,testMsg:''},
  {id:'openai',name:'GPT',model:'gpt-5.6',key:'',ok:false,on:false,testMsg:''}
 ];
-const $=id=>document.getElementById(id), state={history:[],running:false,cooldowns:{}};
+const $=id=>document.getElementById(id), state={history:[],running:false,cooldowns:{},blocked:{}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const cut=(s,n=18000)=>String(s||'').slice(0,n);
 const find=id=>P.find(p=>p.id===id);
@@ -140,6 +140,24 @@ async function apiPost(payload,timeoutMs=30000){
 function providerCooldownMs(p){
  return Math.max(0,Number(state.cooldowns[p.id]||0)-Date.now());
 }
+function classifyError(e){
+ const msg=String(e?.message||'');
+ const low=msg.toLowerCase();
+ const status=Number(e?.status||0);
+ if(/credit_balance_exhausted|no credits remaining|insufficient_quota|payment required|billing/.test(low)){
+   return {kind:'billing',retry:false,label:'API 額度不足 / Billing'};
+ }
+ if(status===401||status===403||/invalid api key|unauthorized|forbidden/.test(low)){
+   return {kind:'auth',retry:false,label:'API Key / 權限問題'};
+ }
+ if(status===429||/rate limit|too many requests|resource_exhausted/.test(low)){
+   return {kind:'rate',retry:true,label:'Rate limit'};
+ }
+ if([500,502,503,504].includes(status)||/high demand|temporar|unavailable|overloaded|service unavailable/.test(low)){
+   return {kind:'capacity',retry:true,label:'服務壅塞 / High demand'};
+ }
+ return {kind:'other',retry:false,label:'其他錯誤'};
+}
 function updateCooldownFromSuccess(p,rate){
  if(!rate)return;
  const req=Number(rate['x-ratelimit-remaining-requests']);
@@ -150,6 +168,12 @@ function updateCooldownFromSuccess(p,rate){
  if(ms>0)state.cooldowns[p.id]=Math.max(Number(state.cooldowns[p.id]||0),Date.now()+ms);
 }
 async function honorCooldown(p,retryMode){
+ if(state.blocked[p.id]){
+   const b=state.blocked[p.id];
+   const e=new Error(p.name+' 本次執行已停用：'+b);
+   e.status=402;
+   throw e;
+ }
  const ms=providerCooldownMs(p);
  if(ms<=0)return;
  const maxWait=retryMode==='fast'?7000:20000;
@@ -173,19 +197,31 @@ async function call(p,prompt,max=3000,retryMode='normal'){
      return out;
    }catch(e){
      lastErr=e;
-     const limited=Number(e.status)===429||/rate limit|too many requests|quota|resource_exhausted/i.test(String(e.message||''));
-     if(!limited)throw e;
+     const cls=classifyError(e);
+
+     if(cls.kind==='billing'||cls.kind==='auth'){
+       state.blocked[p.id]=cls.label;
+       const x=new Error(p.name+'：'+cls.label+'。本次執行不再重試這個 AI。｜'+String(e.message||e));
+       x.status=e.status||402;
+       throw x;
+     }
+
+     if(!cls.retry)throw e;
+
      const serverMs=Number(e.retryAfterMs)||serverRetryMs(e.diagnostic);
-     const expMs=1500*Math.pow(2,attempt);
+     const base=cls.kind==='capacity'?1200:1500;
+     const expMs=base*Math.pow(2,attempt);
      const jitter=Math.floor(Math.random()*700);
      const waitMs=Math.max(serverMs||0,expMs+jitter);
      state.cooldowns[p.id]=Date.now()+waitMs;
+
      const maxWait=retryMode==='fast'?7000:20000;
      if(attempt===maxAttempts-1||waitMs>maxWait){
-       const x=new Error(String(e.message||'Rate limit exceeded')+'｜'+p.name+' cooldown '+Math.ceil(waitMs/1000)+' 秒；本輪先跳過');
-       x.status=429;x.retryAfterMs=waitMs;x.diagnostic=e.diagnostic||null;throw x;
+       const x=new Error(String(e.message||cls.label)+'｜'+p.name+' cooldown '+Math.ceil(waitMs/1000)+' 秒；本輪先跳過');
+       x.status=e.status||429;x.retryAfterMs=waitMs;x.diagnostic=e.diagnostic||null;throw x;
      }
-     setProgress(p.name+' 被限流，依 '+(serverMs?'Retry-After':'指數退避')+' 等待 '+Math.ceil(waitMs/1000)+' 秒後重試…');
+
+     setProgress(p.name+' '+cls.label+'，'+(serverMs?'依 Retry-After':'指數退避')+'等待 '+Math.ceil(waitMs/1000)+' 秒後重試…');
      await sleep(waitMs);
      state.cooldowns[p.id]=0;
    }
@@ -281,7 +317,7 @@ async function run(){
  const pace=$('pace').value;
  const fast=pace==='fast';
  const preferredFinal=find($('final').value)||ps[0];
- state.running=true;$('go').disabled=true;add('你','Request',q);
+ state.blocked={};state.cooldowns={};state.running=true;$('go').disabled=true;add('你','Request',q);
  const transcript=[],H=priorHistory();
  try{
    for(let r=1;r<=total;r++){
